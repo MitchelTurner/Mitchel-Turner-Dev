@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hardware Development — Flight Controllers, Firmware &amp; Sensor Networks | Mitchel Turner Dev</title>
-<meta name="description" content="Custom flight controllers, embedded firmware, and sensor networks — board layout through fleet software, from one bench. STM32H7, PX4/ArduPilot, NDAA-compliant sourcing. Ketchikan, Alaska.">
+<title>Custom Software for Alaska Businesses — Mitchel Turner Dev, Ketchikan AK</title>
+<meta name="description" content="Custom web apps, dashboards, and integrations built for Alaska operators. Ketchikan-based developer, fixed-price scope, direct access. Free scoping call.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ═══════════════════════════════════════════════════════════
-   DEEP WATER AT NIGHT — shared with /web-design and
-   /custom-software. Hero motif here is a routed PCB field
-   with signal pulses instead of the radar sweep.
+   DEEP WATER AT NIGHT — shared system with /web-design.
+   Extract this block to one stylesheet when these move into
+   the Vite project.
    ═══════════════════════════════════════════════════════════ */
 :root{
   --abyss:#04101A;
@@ -54,6 +54,7 @@ body{
   position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
 .progress{
   position:fixed;top:0;left:0;height:2px;width:0;z-index:9998;
   background:linear-gradient(90deg,var(--glacier),var(--bio),var(--magenta));
@@ -105,7 +106,7 @@ h2{font-family:var(--display);font-weight:700;font-size:clamp(32px,5vw,62px);lin
 h3{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0 0 9px;}
 p{margin:0 0 16px;}
 .serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;}
-.lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:58ch;color:var(--fog);}
+.lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:56ch;color:var(--fog);}
 .grad{background:linear-gradient(100deg,var(--bio),var(--glacier) 52%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;}
 .eyebrow{
   display:inline-flex;align-items:center;gap:9px;
@@ -125,35 +126,39 @@ p{margin:0 0 16px;}
 
 /* ═══ HERO ═══ */
 .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:130px var(--gutter) 90px;overflow:hidden;}
-.aurora{position:absolute;inset:-25%;z-index:0;filter:blur(100px);opacity:.55;}
+.aurora{position:absolute;inset:-25%;z-index:0;filter:blur(100px);opacity:.6;}
 .aurora i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;}
-.aurora i:nth-child(1){width:48vw;height:48vw;left:12%;top:-6%;background:radial-gradient(circle,rgba(61,255,192,.5),transparent 68%);animation:drift1 30s ease-in-out infinite alternate;}
-.aurora i:nth-child(2){width:46vw;height:46vw;right:-8%;top:30%;background:radial-gradient(circle,rgba(53,198,255,.52),transparent 68%);animation:drift2 36s ease-in-out infinite alternate;}
-.aurora i:nth-child(3){width:34vw;height:34vw;left:-6%;bottom:-12%;background:radial-gradient(circle,rgba(255,45,142,.34),transparent 68%);animation:drift3 42s ease-in-out infinite alternate;}
-@keyframes drift1{to{transform:translate(-11%,13%) scale(1.15);}}
-@keyframes drift2{to{transform:translate(10%,-12%) scale(1.18);}}
-@keyframes drift3{to{transform:translate(13%,-9%) scale(1.2);}}
+.aurora i:nth-child(1){width:50vw;height:50vw;right:-6%;top:4%;background:radial-gradient(circle,rgba(53,198,255,.55),transparent 68%);animation:drift1 28s ease-in-out infinite alternate;}
+.aurora i:nth-child(2){width:44vw;height:44vw;left:-8%;top:26%;background:radial-gradient(circle,rgba(61,255,192,.5),transparent 68%);animation:drift2 34s ease-in-out infinite alternate;}
+.aurora i:nth-child(3){width:36vw;height:36vw;left:44%;bottom:-16%;background:radial-gradient(circle,rgba(255,45,142,.36),transparent 68%);animation:drift3 40s ease-in-out infinite alternate;}
+@keyframes drift1{to{transform:translate(-13%,12%) scale(1.16);}}
+@keyframes drift2{to{transform:translate(12%,-11%) scale(1.14);}}
+@keyframes drift3{to{transform:translate(-9%,-13%) scale(1.2);}}
 
-/* PCB trace field — hardware's answer to the radar sweep */
-.traces{
-  position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.85;
-  -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 8%,transparent 72%);
-  mask-image:radial-gradient(ellipse at 50% 45%,#000 8%,transparent 72%);
+/* Data grid + sonar sweep */
+.gridfield{
+  position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(rgba(53,198,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(53,198,255,.07) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 10%,transparent 68%);
+  mask-image:radial-gradient(ellipse at 50% 45%,#000 10%,transparent 68%);
 }
-.traces .route{fill:none;stroke:rgba(53,198,255,.20);stroke-width:1.25;stroke-linecap:square;stroke-linejoin:miter;}
-.traces .via{fill:none;stroke:rgba(53,198,255,.28);stroke-width:1.25;}
-.traces .pad{fill:rgba(53,198,255,.13);}
-.traces .pulse{
-  fill:none;stroke:var(--bio);stroke-width:1.75;stroke-linecap:round;
-  filter:drop-shadow(0 0 5px rgba(61,255,192,.9));
-  stroke-dasharray:70 1400;stroke-dashoffset:1400;
-  animation:signal 7s linear infinite;
+.radar{position:absolute;left:50%;top:46%;width:min(1400px,145vw);aspect-ratio:1;transform:translate(-50%,-50%);z-index:1;pointer-events:none;opacity:.5;}
+.radar .rings{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(61,255,192,.09);}
+.radar .rings::before,.radar .rings::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(61,255,192,.09);}
+.radar .rings::before{inset:20%;}
+.radar .rings::after{inset:38%;}
+.radar .sweep{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 296deg,rgba(53,198,255,.04) 330deg,rgba(53,198,255,.15) 356deg,rgba(53,198,255,.3) 359.4deg,transparent 360deg);
+  animation:sweep 11s linear infinite;
+  -webkit-mask-image:radial-gradient(circle,#000 0 56%,transparent 74%);
+  mask-image:radial-gradient(circle,#000 0 56%,transparent 74%);
 }
-.traces .pulse:nth-of-type(2){animation-duration:9s;animation-delay:1.6s;stroke:var(--glacier);filter:drop-shadow(0 0 5px rgba(53,198,255,.9));}
-.traces .pulse:nth-of-type(3){animation-duration:11s;animation-delay:3.4s;}
-@keyframes signal{to{stroke-dashoffset:-70;}}
-
-.hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 26%,rgba(4,16,26,.7) 74%,var(--abyss) 100%);}
+@keyframes sweep{to{transform:rotate(360deg);}}
+.hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 28%,rgba(4,16,26,.7) 76%,var(--abyss) 100%);}
 .hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1fr;gap:48px;align-items:end;max-width:1240px;margin:0 auto;width:100%;}
 @media(min-width:980px){.hero-grid{grid-template-columns:1.5fr .8fr;gap:64px;}}
 
@@ -174,7 +179,7 @@ body.loaded .reveal-line > span{transform:none;}
 .spec{padding:28px 28px 10px;}
 .spec dl{margin:0;}
 .spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:5px;}
-.spec dd{margin:0 0 20px;font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2;}
+.spec dd{margin:0 0 20px;font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:1.15;}
 .spec dd small{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:15px;color:var(--fog);letter-spacing:0;margin-top:3px;}
 
 .hero-actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;}
@@ -185,13 +190,30 @@ body.loaded .reveal-line > span{transform:none;}
 .marquee{overflow:hidden;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:20px 0;background:rgba(255,255,255,.018);
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
-.mtrack{display:flex;width:max-content;animation:scroll 44s linear infinite;}
+.mtrack{display:flex;width:max-content;animation:scroll 40s linear infinite;}
 .marquee:hover .mtrack{animation-play-state:paused;}
 @keyframes scroll{to{transform:translateX(-50%);}}
 .mtrack span{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:30px;}
-.mtrack span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--glacier);flex:none;}
+.mtrack span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--bio);flex:none;}
 
-/* ═══ Bento ═══ */
+/* ═══ HAZARDS — "the leak" ═══ */
+.hazards{margin:52px 0 0;padding:0;list-style:none;}
+.hazards li{
+  position:relative;padding:24px 24px 24px 62px;
+  border-top:1px solid var(--edge);font-size:clamp(17px,1.7vw,19.5px);
+  transition:background .4s var(--ease),padding-left .4s var(--ease);
+}
+.hazards li:last-child{border-bottom:1px solid var(--edge);}
+.hazards li:hover{background:rgba(255,255,255,.03);padding-left:70px;}
+.hazards li::before,.hazards li::after{
+  content:"";position:absolute;background:var(--magenta);
+  box-shadow:0 0 12px rgba(255,45,142,.8);transition:transform .4s var(--ease);
+}
+.hazards li::before{left:22px;top:calc(50% - .5px);width:16px;height:1.5px;}
+.hazards li::after{left:29px;top:calc(50% - 8px);width:1.5px;height:16px;}
+.hazards li:hover::before,.hazards li:hover::after{transform:rotate(45deg);}
+
+/* ═══ Bento capabilities ═══ */
 .bento{display:grid;grid-template-columns:1fr;gap:14px;margin-top:52px;}
 @media(min-width:640px){.bento{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:900px){.bento{grid-template-columns:repeat(6,1fr);gap:16px;}}
@@ -202,45 +224,19 @@ body.loaded .reveal-line > span{transform:none;}
 }
 .cell::before{
   content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s;
-  background:radial-gradient(460px circle at var(--mx,50%) var(--my,50%),rgba(53,198,255,.17),transparent 62%);
+  background:radial-gradient(460px circle at var(--mx,50%) var(--my,50%),rgba(61,255,192,.16),transparent 62%);
 }
 .cell:hover{border-color:var(--edge-lit);transform:translateY(-3px);}
 .cell:hover::before{opacity:1;}
 .cell p{margin:0;font-size:15.5px;color:var(--fog);position:relative;}
 .cell h3,.cell .idx{position:relative;}
-.idx{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--bio);display:block;margin-bottom:16px;}
+.idx{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--glacier);display:block;margin-bottom:16px;}
 @media(min-width:900px){
   .cell{grid-column:span 2;}
-  .cell--a{grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:310px;}
-  .cell--a h3{font-size:clamp(24px,2.6vw,34px);letter-spacing:-.03em;line-height:1.05;max-width:16ch;}
-  .cell--a p{font-size:17px;max-width:48ch;}
+  .cell--a{grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:300px;}
+  .cell--a h3{font-size:clamp(24px,2.6vw,34px);letter-spacing:-.03em;line-height:1.05;max-width:15ch;}
+  .cell--a p{font-size:17px;max-width:46ch;}
 }
-
-/* ═══ Handoff section ═══ */
-.split{display:grid;grid-template-columns:1fr;gap:16px;margin-top:52px;}
-@media(min-width:820px){.split{grid-template-columns:1fr 1fr;gap:20px;}}
-.panel{
-  position:relative;border-radius:20px;border:1px solid var(--edge);padding:34px;
-  background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
-}
-.panel--bad{border-color:rgba(255,45,142,.28);}
-.panel--good{border-color:rgba(61,255,192,.3);}
-.panel .plabel{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;display:block;margin-bottom:18px;}
-.panel--bad .plabel{color:var(--magenta);}
-.panel--good .plabel{color:var(--bio);}
-.chain{margin:0;padding:0;list-style:none;}
-.chain li{
-  position:relative;padding:11px 0 11px 26px;font-size:15.5px;color:var(--fog);
-  border-bottom:1px solid var(--edge);
-}
-.chain li:last-child{border-bottom:none;}
-.chain li::before{
-  content:"";position:absolute;left:4px;top:19px;width:8px;height:8px;border-radius:50%;
-  border:1px solid currentColor;
-}
-.panel--bad .chain li::before{color:var(--magenta);}
-.panel--good .chain li::before{color:var(--bio);background:var(--bio);box-shadow:0 0 10px var(--bio);}
-.panel .kicker{margin:22px 0 0;font-size:15.5px;color:var(--ice);}
 
 /* ═══ DR PLOT ═══ */
 .track{margin-top:60px;}
@@ -279,9 +275,12 @@ body.loaded .reveal-line > span{transform:none;}
 .fix h3{font-size:19px;}
 .fix p{font-size:15px;color:var(--fog);margin:0;}
 
-/* ═══ Honest ═══ */
-.honest{max-width:780px;}
-.honest .quote{font-family:var(--serif);font-style:italic;font-size:clamp(26px,3.4vw,42px);line-height:1.2;color:var(--ice);margin:0 0 26px;}
+/* ═══ Stack ═══ */
+.stackgrid{display:grid;grid-template-columns:1fr;gap:0;margin-top:44px;border-top:1px solid var(--edge);}
+.stackgrid div{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--edge);align-items:baseline;}
+@media(max-width:560px){.stackgrid div{grid-template-columns:1fr;gap:6px;}}
+.stackgrid dt{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin:0;}
+.stackgrid dd{margin:0;font-family:var(--mono);font-size:14.5px;letter-spacing:.02em;color:var(--ice);}
 
 /* ═══ Form ═══ */
 .form-grid{display:grid;grid-template-columns:1fr;gap:48px;}
@@ -345,76 +344,48 @@ form.is-sent{display:none;}
   <a class="wordmark" href="/">Mitchel Turner <em>Dev</em></a>
   <div class="nav-right">
     <span class="nav-loc">55°20′N 131°38′W · Ketchikan, AK</span>
-    <a class="btn btn--primary btn--sm" href="#start"><span>Talk hardware</span></a>
+    <a class="btn btn--primary btn--sm" href="#start"><span>Book a call</span></a>
   </div>
 </nav>
 
 <header class="hero">
   <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-
-  <svg class="traces" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-    <g class="route">
-      <polyline points="-40,180 220,180 280,240 620,240 680,180 1100,180 1160,240 1480,240"/>
-      <polyline points="-40,330 160,330 230,400 560,400 620,340 980,340 1050,410 1480,410"/>
-      <polyline points="-40,520 300,520 360,460 700,460 760,520 1180,520 1240,580 1480,580"/>
-      <polyline points="-40,700 240,700 310,630 660,630 720,700 1040,700 1110,640 1480,640"/>
-      <polyline points="120,-40 120,140 190,210 190,880"/>
-      <polyline points="480,-40 480,200 420,260 420,880"/>
-      <polyline points="880,-40 880,300 940,360 940,880"/>
-      <polyline points="1280,-40 1280,180 1220,240 1220,880"/>
-    </g>
-    <g class="via">
-      <circle cx="220" cy="180" r="5.5"/><circle cx="680" cy="180" r="5.5"/>
-      <circle cx="620" cy="340" r="5.5"/><circle cx="360" cy="460" r="5.5"/>
-      <circle cx="760" cy="520" r="5.5"/><circle cx="1160" cy="240" r="5.5"/>
-      <circle cx="310" cy="630" r="5.5"/><circle cx="1110" cy="640" r="5.5"/>
-      <circle cx="190" cy="210" r="5.5"/><circle cx="940" cy="360" r="5.5"/>
-    </g>
-    <g class="pad">
-      <rect x="404" y="244" width="32" height="11" rx="2"/>
-      <rect x="924" y="344" width="32" height="11" rx="2"/>
-      <rect x="1204" y="224" width="32" height="11" rx="2"/>
-      <rect x="174" y="194" width="32" height="11" rx="2"/>
-    </g>
-    <polyline class="pulse" points="-40,180 220,180 280,240 620,240 680,180 1100,180 1160,240 1480,240"/>
-    <polyline class="pulse" points="-40,520 300,520 360,460 700,460 760,520 1180,520 1240,580 1480,580"/>
-    <polyline class="pulse" points="880,-40 880,300 940,360 940,880"/>
-  </svg>
-
+  <div class="gridfield" aria-hidden="true"></div>
+  <div class="radar" aria-hidden="true"><div class="rings"></div><div class="sweep"></div></div>
   <div class="hero-vignette" aria-hidden="true"></div>
 
   <div class="hero-grid">
     <div>
-      <p class="eyebrow"><span class="dot"></span> Hardware development · Ketchikan, Alaska</p>
+      <p class="eyebrow"><span class="dot"></span> Custom software · built in Alaska</p>
       <h1>
-        <span class="reveal-line"><span>Boards, firmware,</span></span>
-        <span class="reveal-line"><span>and the software</span></span>
-        <span class="reveal-line"><span>that <em class="serif grad">flies</em> them.</span></span>
+        <span class="reveal-line"><span>Software shaped</span></span>
+        <span class="reveal-line"><span>around how you</span></span>
+        <span class="reveal-line"><span><em class="serif grad">actually</em> work.</span></span>
       </h1>
-      <p class="lede">Custom flight controllers, embedded systems, and sensor networks — schematic, layout, bring-up, firmware, and the backend the data lands in, all from one bench. Built for places where the signal drops and the weather doesn't cooperate, because that's where I test them.</p>
+      <p class="lede">Custom web apps, dashboards, billing flows, and integrations for Alaska operators — scoped at a fixed price and built by the person you talk to. When the spreadsheet, the whiteboard, and three separate subscriptions stop holding it together, this is what comes next.</p>
 
       <div class="hero-actions">
-        <a class="btn btn--primary" href="#start"><span>Start a conversation →</span></a>
+        <a class="btn btn--primary" href="#start"><span>Book a scoping call →</span></a>
         <a class="btn btn--ghost" href="#build"><span>What I build</span></a>
       </div>
 
       <div class="hero-stats">
-        <div class="stat"><div class="n">Part <span data-count="107">0</span></div><div class="l">FAA remote pilot certified</div></div>
-        <div class="stat"><div class="n" data-count="5">0</div><div class="l">Unit mesh swarm, flying</div></div>
-        <div class="stat"><div class="n" data-count="0">0</div><div class="l">Handoffs board to backend</div></div>
+        <div class="stat"><div class="n"><span data-count="45">0</span> min</div><div class="l">Free scoping call</div></div>
+        <div class="stat"><div class="n"><span data-count="6">0</span>–<span data-count="10">0</span></div><div class="l">Weeks to v1</div></div>
+        <div class="stat"><div class="n" data-count="0">0</div><div class="l">Lock-in clauses</div></div>
       </div>
     </div>
 
     <aside class="glass spec" data-reveal>
       <dl>
-        <dt>Platforms</dt>
-        <dd>STM32H7 · PX4 / ArduPilot<small>FMUv6 reference lineage</small></dd>
-        <dt>Sourcing</dt>
-        <dd>NDAA-compliant<small>US-made parts where it matters</small></dd>
-        <dt>Certification</dt>
-        <dd>FAA Part 107<small>§107.35 waiver experience</small></dd>
-        <dt>Scope</dt>
-        <dd>Board to backend<small>Same person, whole path</small></dd>
+        <dt>Scoping call</dt>
+        <dd>Free, 45 minutes<small>You keep the write-up either way</small></dd>
+        <dt>Pricing</dt>
+        <dd>Fixed price per phase</dd>
+        <dt>First working version</dt>
+        <dd>Usually 6–10 weeks</dd>
+        <dt>Who writes the code</dt>
+        <dd>Me<small>That's the whole team</small></dd>
       </dl>
     </aside>
   </div>
@@ -422,79 +393,65 @@ form.is-sent{display:none;}
 
 <div class="marquee" aria-hidden="true">
   <div class="mtrack">
-    <span>STM32H7</span><span>PX4</span><span>ArduPilot</span><span>MAVLink</span><span>MAVSDK</span><span>pymavlink</span><span>LoRa mesh</span><span>RTK / PPK</span><span>GNSS</span><span>NDAA-compliant</span>
-    <span>STM32H7</span><span>PX4</span><span>ArduPilot</span><span>MAVLink</span><span>MAVSDK</span><span>pymavlink</span><span>LoRa mesh</span><span>RTK / PPK</span><span>GNSS</span><span>NDAA-compliant</span>
+    <span>NestJS</span><span>PostgreSQL</span><span>Prisma</span><span>React</span><span>Vite</span><span>Tailwind</span><span>Redis</span><span>BullMQ</span><span>Stripe</span><span>Railway</span>
+    <span>NestJS</span><span>PostgreSQL</span><span>Prisma</span><span>React</span><span>Vite</span><span>Tailwind</span><span>Redis</span><span>BullMQ</span><span>Stripe</span><span>Railway</span>
   </div>
 </div>
 
+<!-- ═══ HAZARDS ═══ -->
+<section class="band">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Shoal water</p>
+    <h2 data-reveal>Nobody decides to buy software. They notice the <span class="serif grad">leak</span>.</h2>
+    <p class="lede" data-reveal>If two or more of these sound like your week, it's worth a conversation.</p>
+
+    <ul class="hazards">
+      <li data-reveal>The same information gets typed into three places, and by Friday they disagree.</li>
+      <li data-reveal>One spreadsheet runs a critical part of the business, and exactly one person understands it.</li>
+      <li data-reveal>Invoicing, deposits, or payroll eat a full day every month that nobody has.</li>
+      <li data-reveal>You pay for software that does 20% of what you need and blocks the other 80%.</li>
+      <li data-reveal>Two systems can't talk to each other, so a person is the integration.</li>
+      <li data-reveal>You can't answer a basic question about last season without rebuilding the numbers by hand.</li>
+      <li data-reveal>Growth means hiring another admin instead of selling more.</li>
+    </ul>
+
+    <p class="lede" data-reveal style="margin-top:36px;color:var(--ice);">A 45-minute call will tell you whether custom software is worth it — or whether an off-the-shelf tool you haven't tried yet does the job for a fraction of the price. I'll say so if it does.</p>
+  </div>
+</section>
+
 <!-- ═══ CAPABILITIES ═══ -->
-<section class="band" id="build">
+<section class="band band--edge" id="build">
   <div class="inner">
     <p class="eyebrow" data-reveal><span class="dot"></span> What I build</p>
-    <h2 data-reveal>Silicon, solder, and the <span class="serif grad">stack above it</span>.</h2>
-    <p class="lede" data-reveal>Small-run and prototype work where the electrical, embedded, and application layers all have to agree with each other.</p>
+    <h2 data-reveal>Internal tools and customer-facing apps, <span class="serif grad">end to end</span>.</h2>
+    <p class="lede" data-reveal>Front end, back end, database, payments, deployment — one person across the whole stack, so nothing falls between contractors.</p>
 
     <div class="bento">
       <article class="cell cell--a" data-tilt data-reveal>
         <span class="idx">01</span>
-        <h3>Flight controllers &amp; autopilot hardware.</h3>
-        <p>Custom FC boards on STM32H7, working from the FMUv6 reference lineage, targeting PX4 and ArduPilot. NDAA-compliant sourcing throughout, with the BOM costed across tiers before anything gets routed — so you find out what it costs at schematic, not at fab.</p>
+        <h3>Booking &amp; scheduling that knows your season.</h3>
+        <p>Reservations, charter and tour slots, moorage, equipment, crew rosters — with the seasonal, tidal, and weather rules your business actually runs on, not a generic calendar you fight every week.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">02</span><h3>Firmware &amp; embedded</h3>
-        <p>Bare metal through RTOS. Drivers, bootloaders, sensor fusion, and the unglamorous power and timing work underneath it.</p>
+        <span class="idx">02</span><h3>Billing &amp; payments</h3>
+        <p>Stripe deposits, recurring invoices, split payments, refunds, and receipts that reconcile without re-entry.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">03</span><h3>Mesh &amp; telemetry</h3>
-        <p>MAVLink hub-and-spoke fleets with clean addressing, and LoRa mesh for long-range low-power sensor networks off the grid.</p>
+        <span class="idx">03</span><h3>Dashboards &amp; reporting</h3>
+        <p>The numbers you check every morning, on one screen, current — not a spreadsheet someone rebuilds weekly.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">04</span><h3>Sensor integration</h3>
-        <p>GNSS and RTK, IMU, sonar, environmental. Getting the reading off the device, through the link, and into a database that answers questions.</p>
+        <span class="idx">04</span><h3>Integrations &amp; APIs</h3>
+        <p>Two systems that were never meant to talk, syncing on a schedule, with nobody in the middle.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">05</span><h3>Ground &amp; fleet software</h3>
-        <p>Coordinators, mission planning, telemetry ingest, and the dashboards that make a fleet legible to whoever's responsible for it.</p>
+        <span class="idx">05</span><h3>Field &amp; ops tools</h3>
+        <p>Dispatch, job tracking, inspections, and forms that work on a phone in a boat or a truck — including when the signal drops.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">06</span><h3>Survey workflows</h3>
-        <p>RTK/PPK aerial survey end to end — flight plan, capture, processing, and a deliverable someone can actually use.</p>
+        <span class="idx">06</span><h3>Data cleanup &amp; migration</h3>
+        <p>Fifteen years of records out of a legacy system or a stack of spreadsheets, into something queryable.</p>
       </article>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ THE HANDOFF ═══ -->
-<section class="band band--edge">
-  <div class="inner">
-    <p class="eyebrow" data-reveal><span class="dot"></span> Why one bench</p>
-    <h2 data-reveal>Most hardware projects die at the <span class="serif grad">handoff</span>.</h2>
-    <p class="lede" data-reveal>Not at the schematic. Not at the layout. At the seam between the people who own each layer — where everyone's piece works and the system doesn't.</p>
-
-    <div class="split">
-      <div class="panel panel--bad" data-reveal>
-        <span class="plabel">The usual chain</span>
-        <ul class="chain">
-          <li>An EE designs the board and ships you gerbers</li>
-          <li>A firmware contractor writes drivers against a datasheet</li>
-          <li>An app developer receives a telemetry format by email</li>
-          <li>Nobody owns the path from sensor to screen</li>
-          <li>It works on the bench and fails in the field</li>
-        </ul>
-        <p class="kicker">Every seam is a place for a spec to get lost, and every fix crosses three invoices.</p>
-      </div>
-
-      <div class="panel panel--good" data-reveal>
-        <span class="plabel">This one</span>
-        <ul class="chain">
-          <li>Same person picks the MCU and routes the board</li>
-          <li>Same person writes the driver for the part they chose</li>
-          <li>Same person defines the telemetry schema</li>
-          <li>Same person builds the backend it lands in</li>
-          <li>Field failures get diagnosed across all four layers at once</li>
-        </ul>
-        <p class="kicker">Fewer people is a real constraint on throughput. It's also why the seams don't leak.</p>
-      </div>
     </div>
   </div>
 </section>
@@ -503,38 +460,46 @@ form.is-sent{display:none;}
 <section class="band band--edge">
   <div class="inner">
     <p class="eyebrow" data-reveal><span class="dot"></span> How it runs · five legs</p>
-    <h2 data-reveal>Costed at schematic, not at <span class="serif grad">fab</span>.</h2>
-    <p class="lede" data-reveal>Hardware punishes surprises. Every leg ends with something you can hold, read, or run before the next one starts.</p>
+    <h2 data-reveal>Fixed price per leg. <span class="serif grad">No open meters.</span></h2>
+    <p class="lede" data-reveal>Every phase is scoped and priced before it starts. You can stop after any leg and keep everything built so far.</p>
 
     <div class="track" id="track">
       <ol>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 01 · 1–2 wks</span><h3>Requirements</h3>
-          <p>What it has to do, where it has to survive, what it can weigh, and what it can cost per unit.</p></li>
+          <span class="leg">Leg 01 · free</span><h3>Scoping call</h3>
+          <p>Walk me through how the work flows now, including the parts held together by memory and habit.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 02 · 2–3 wks</span><h3>Schematic &amp; BOM</h3>
-          <p>Parts chosen for availability and compliance, not just spec. Costed across tiers before layout starts.</p></li>
+          <span class="leg">Leg 02 · 1 wk</span><h3>Written scope</h3>
+          <p>What gets built, what doesn't, what it costs, how long. Yours to keep and to shop around.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 03 · 3–5 wks</span><h3>Layout &amp; fab</h3>
-          <p>Routing, DFM review, boards ordered and assembled. Lead times are what they are and you'll see them up front.</p></li>
+          <span class="leg">Leg 03 · 6–10 wks</span><h3>Build in two-week runs</h3>
+          <p>Working software you can click through at the end of every run. No six-month silence.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 04 · 3–6 wks</span><h3>Bring-up &amp; firmware</h3>
-          <p>Power on rail by rail, then drivers, then the application layer. Documented as it happens.</p></li>
+          <span class="leg">Leg 04 · 1 wk</span><h3>Launch &amp; training</h3>
+          <p>Real data migrated, your team walked through it, written docs left behind.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 05 · field</span><h3>Test in the weather</h3>
-          <p>At real range, in real rain, on real water. Bench results are a hypothesis until then.</p></li>
+          <span class="leg">Leg 05 · ongoing</span><h3>Support</h3>
+          <p>Monthly retainer or hourly, your call. Either way you keep the code and the database.</p></li>
       </ol>
     </div>
   </div>
 </section>
 
-<!-- ═══ HONEST ═══ -->
+<!-- ═══ STACK ═══ -->
 <section class="band band--edge">
-  <div class="inner honest">
-    <p class="eyebrow" data-reveal><span class="dot"></span> Straight answer</p>
-    <p class="quote" data-reveal>Hardware is slower and more expensive than software. That isn't a sales problem, it's physics.</p>
-    <p class="lede" data-reveal>A code revision costs an afternoon. A board revision costs weeks, a minimum order, and another round of bring-up. So the first question I'll ask is whether your problem can be solved with software on hardware that already exists — an off-the-shelf flight controller, a commercial sensor, someone else's radio. Often it can, and I'll say so.</p>
-    <p class="lede" data-reveal style="color:var(--ice);margin-top:22px;">Custom silicon earns its keep when the off-the-shelf part doesn't exist, can't be sourced compliantly, costs too much at volume, or won't survive where you're putting it. Those are real and I've hit all four. They're just rarer than people expect.</p>
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Under the hood</p>
+    <h2 data-reveal>Boring, proven tools — chosen so <span class="serif grad">someone else</span> could pick this up.</h2>
+
+    <dl class="stackgrid" data-reveal>
+      <div><dt>Back end</dt><dd>NestJS · PostgreSQL · Prisma · Redis · BullMQ</dd></div>
+      <div><dt>Front end</dt><dd>React · Vite · Tailwind</dd></div>
+      <div><dt>Payments</dt><dd>Stripe</dd></div>
+      <div><dt>Hosting</dt><dd>Railway, or your own infrastructure</dd></div>
+      <div><dt>Handover</dt><dd>Your repo, your database, your accounts — documented</dd></div>
+    </dl>
+
+    <p class="lede" data-reveal style="margin-top:34px;color:var(--ice);max-width:62ch;">No proprietary framework only I can maintain, and no lock-in clause. If you ever want to bring the work in house or hand it to another developer, the code is yours and it's written to be read.</p>
   </div>
 </section>
 
@@ -543,55 +508,56 @@ form.is-sent{display:none;}
   <div class="inner">
     <div class="form-grid">
       <div>
-        <p class="eyebrow" data-reveal><span class="dot"></span> Start a conversation</p>
-        <h2 data-reveal>Tell me what you're <span class="serif grad">building</span>.</h2>
-        <p class="lede" data-reveal>Napkin sketch or half-finished prototype, both are fine. First conversation is free and ends with an honest read on feasibility, rough cost band, and whether custom hardware is the right answer at all.</p>
+        <p class="eyebrow" data-reveal><span class="dot"></span> Book a scoping call</p>
+        <h2 data-reveal>Start with a conversation, not a <span class="serif grad">contract</span>.</h2>
+        <p class="lede" data-reveal>Forty-five minutes, no charge, no obligation. You'll leave with a written summary of what I'd build, roughly what it costs, and an honest answer about whether you need it at all.</p>
         <div data-reveal style="margin-top:34px;">
           <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
           <a class="contact-line" href="tel:+19075550100" data-track="call">(907) 555-0100</a>
-          <a class="contact-line" href="mailto:hello@mitchelturner.dev" data-track="email">hello@mitchelturner.dev</a>
+          <a class="contact-line" href="mailto:info@mitchelturner.dev" data-track="email">info@mitchelturner.dev</a>
         </div>
       </div>
 
       <div>
         <div class="glass formwrap" data-reveal>
           <form id="lead-form" novalidate>
+            <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+              <label for="company">Company</label>
+              <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+            </div>
             <div class="field-row">
               <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
-              <div class="field"><label for="org">Organization</label><input id="org" name="org" type="text" autocomplete="organization"></div>
+              <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" autocomplete="organization" required></div>
             </div>
             <div class="field-row">
               <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
               <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
             </div>
             <div class="field-row">
-              <div class="field"><label for="stage">Current stage</label>
-                <select id="stage" name="stage">
-                  <option>Idea / napkin sketch</option><option>Requirements written</option>
-                  <option>Schematic in progress</option><option>Prototype exists</option>
-                  <option>Working unit, needs revision</option>
+              <div class="field"><label for="industry">Industry</label>
+                <select id="industry" name="industry">
+                  <option>Marine / charter / marina</option><option>Tourism / lodging</option>
+                  <option>Construction / trades</option><option>Retail / food service</option>
+                  <option>Government / tribal / nonprofit</option><option>Other</option>
                 </select>
               </div>
-              <div class="field"><label for="qty">Expected quantity</label>
-                <select id="qty" name="qty">
-                  <option>One-off / proof of concept</option><option>Under 10</option>
-                  <option>10–100</option><option>100+</option><option>Don't know yet</option>
+              <div class="field"><label for="timeline">Timeline</label>
+                <select id="timeline" name="timeline">
+                  <option>As soon as possible</option><option>Next 1–3 months</option>
+                  <option>Before next season</option><option>Still exploring</option>
                 </select>
               </div>
             </div>
-            <div class="field"><label for="env">Where does it have to work?</label>
-              <input id="env" name="env" type="text" placeholder="Marine, airborne, sub-zero, no cell coverage…">
+            <div class="field"><label for="details">What's the process that isn't working?</label>
+              <textarea id="details" name="details" placeholder="Describe it the way you'd describe it to a new hire — the spreadsheet, the double entry, the thing that eats every Monday."></textarea>
             </div>
-            <div class="field"><label for="details">What are you building?</label>
-              <textarea id="details" name="details" placeholder="What it needs to do, what you've already tried, and what's blocking you. Constraints are more useful than features."></textarea>
-            </div>
-            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Send project details →</span></button>
-            <p class="formnote">No newsletter, no drip sequence. Your details go to one inbox — mine. Happy to sign an NDA before you send specifics.</p>
+            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Request a scoping call →</span></button>
+            <p class="formnote">No newsletter, no drip sequence. Your details go to one inbox — mine.</p>
           </form>
 
           <div class="thanks" id="thanks" role="status">
             <h3 style="font-size:28px;">Sent.</h3>
-            <p style="color:var(--fog);margin:0;">I've got it. I'll reply within one business day with a first read and a few questions worth answering before we talk.</p>
+            <p style="color:var(--fog);margin:0;">I've got it. I'll reply within one business day with a couple of times for the call, from my own email address.</p>
           </div>
         </div>
       </div>
@@ -601,12 +567,12 @@ form.is-sent{display:none;}
 
 <footer class="footer">
   <span>Mitchel Turner Dev, LLC · Ketchikan, Alaska</span>
-  <span><a href="/web-design">Web design</a> · <a href="/custom-software">Custom software</a> · <a href="/">Home</a></span>
+  <span><a href="/web-design">Web design</a> · <a href="/">Home</a></span>
 </footer>
 
 <div class="dock" id="dock">
-  <p><b>Napkin sketch to flying prototype.</b></p>
-  <a class="btn btn--primary btn--sm" href="#start"><span>Start</span></a>
+  <p><b>Free 45-minute call.</b> You keep the write-up.</p>
+  <a class="btn btn--primary btn--sm" href="#start"><span>Book it</span></a>
 </div>
 
 <script>
@@ -664,23 +630,47 @@ form.is-sent{display:none;}
     else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
   }
 
-  /* ── Lead form ──────────────────────────────────────────
-     Point fetch() at your endpoint; swap send_to for the real
-     conversion labels from the Google Ads UI.
+  /* ── Lead form → /api/contact ───────────────────────────
+     Swap send_to for the real conversion labels from Google Ads.
      ────────────────────────────────────────────────────── */
   var form=document.getElementById('lead-form'), thanks=document.getElementById('thanks');
   if(form){
-    form.addEventListener('submit',function(ev){
+    form.addEventListener('submit',async function(ev){
       ev.preventDefault();
       if(!form.checkValidity()){form.reportValidity();return;}
-      var payload=Object.fromEntries(new FormData(form).entries());
-      payload.source='hardware-landing';
+      var data=Object.fromEntries(new FormData(form).entries());
+      var message=[
+        'Source: custom-software-landing',
+        data.business?'Business: '+data.business:'',
+        data.phone?'Phone: '+data.phone:'',
+        data.industry?'Industry: '+data.industry:'',
+        data.timeline?'Timeline: '+data.timeline:'',
+        '',
+        data.details||'(No project details provided)'
+      ].filter(function(line,i,arr){return line!==''||(i>0&&arr[i-1]!=='');}).join('\n');
+      if(message.length<10) message+='\n\nLanding page lead.';
 
-      // fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-
-      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
-      form.classList.add('is-sent'); thanks.classList.add('is-visible');
-      thanks.scrollIntoView({block:'center'});
+      var btn=form.querySelector('[type=submit]');
+      if(btn){btn.disabled=true;btn.setAttribute('aria-busy','true');}
+      try{
+        var res=await fetch('/api/contact',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name:data.name,email:data.email,message:message,company:data.company||''})
+        });
+        var json=await res.json().catch(function(){return {};});
+        if(res.ok&&json.ok){
+          if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
+          form.classList.add('is-sent'); thanks.classList.add('is-visible');
+          thanks.scrollIntoView({block:'center'});
+        } else {
+          alert(json.error||'Could not send. Please email info@mitchelturner.dev directly.');
+          if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}
+        }
+      } catch(err){
+        alert('Network error. Please email info@mitchelturner.dev directly.');
+        if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}
+      }
     });
   }
   document.querySelectorAll('[data-track]').forEach(function(el){

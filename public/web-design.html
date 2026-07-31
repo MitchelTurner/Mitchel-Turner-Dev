@@ -525,13 +525,17 @@ form.is-sent{display:none;}
         <div data-reveal style="margin-top:34px;">
           <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
           <a class="contact-line" href="tel:+19075550100" data-track="call">(907) 555-0100</a>
-          <a class="contact-line" href="mailto:hello@mitchelturner.dev" data-track="email">hello@mitchelturner.dev</a>
+          <a class="contact-line" href="mailto:info@mitchelturner.dev" data-track="email">info@mitchelturner.dev</a>
         </div>
       </div>
 
       <div>
         <div class="glass formwrap" data-reveal>
           <form id="lead-form" novalidate>
+            <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+              <label for="company">Company</label>
+              <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+            </div>
             <div class="field-row">
               <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
               <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" autocomplete="organization" required></div>
@@ -631,23 +635,47 @@ form.is-sent{display:none;}
     else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
   }
 
-  /* ── Lead form ──────────────────────────────────────────
-     Point fetch() at your endpoint; swap send_to for the real
-     conversion labels from the Google Ads UI.
+  /* ── Lead form → /api/contact ───────────────────────────
+     Swap send_to for the real conversion labels from Google Ads.
      ────────────────────────────────────────────────────── */
   var form=document.getElementById('lead-form'), thanks=document.getElementById('thanks');
   if(form){
-    form.addEventListener('submit',function(ev){
+    form.addEventListener('submit',async function(ev){
       ev.preventDefault();
       if(!form.checkValidity()){form.reportValidity();return;}
-      var payload=Object.fromEntries(new FormData(form).entries());
-      payload.source='web-design-landing';
+      var data=Object.fromEntries(new FormData(form).entries());
+      var message=[
+        'Source: web-design-landing',
+        data.business?'Business: '+data.business:'',
+        data.phone?'Phone: '+data.phone:'',
+        data.town?'Town: '+data.town:'',
+        data.timeline?'Timeline: '+data.timeline:'',
+        '',
+        data.details||'(No project details provided)'
+      ].filter(function(line,i,arr){return line!==''||(i>0&&arr[i-1]!=='');}).join('\n');
+      if(message.length<10) message+='\n\nLanding page lead.';
 
-      // fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-
-      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
-      form.classList.add('is-sent'); thanks.classList.add('is-visible');
-      thanks.scrollIntoView({block:'center'});
+      var btn=form.querySelector('[type=submit]');
+      if(btn){btn.disabled=true;btn.setAttribute('aria-busy','true');}
+      try{
+        var res=await fetch('/api/contact',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name:data.name,email:data.email,message:message,company:data.company||''})
+        });
+        var json=await res.json().catch(function(){return {};});
+        if(res.ok&&json.ok){
+          if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
+          form.classList.add('is-sent'); thanks.classList.add('is-visible');
+          thanks.scrollIntoView({block:'center'});
+        } else {
+          alert(json.error||'Could not send. Please email info@mitchelturner.dev directly.');
+          if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}
+        }
+      } catch(err){
+        alert('Network error. Please email info@mitchelturner.dev directly.');
+        if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}
+      }
     });
   }
   document.querySelectorAll('[data-track]').forEach(function(el){

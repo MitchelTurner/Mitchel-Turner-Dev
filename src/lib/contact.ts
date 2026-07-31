@@ -40,7 +40,10 @@ export async function sendContactEmail(
   if (!apiKey) return { ok: false, reason: "not_configured" };
 
   const resend = new Resend(apiKey);
-  const subject = `Portfolio contact from ${msg.name}`;
+  const sourceMatch = msg.message.match(/^Source:\s*(.+)$/m);
+  const subject = sourceMatch
+    ? `Landing lead (${sourceMatch[1].trim()}) from ${msg.name}`
+    : `Portfolio contact from ${msg.name}`;
   const text = [
     `Name: ${msg.name}`,
     `Email: ${msg.email}`,

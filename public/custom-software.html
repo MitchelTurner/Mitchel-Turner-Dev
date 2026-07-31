@@ -638,13 +638,11 @@ form.is-sent{display:none;}
     else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
   }
 
-  /* ── Lead form → /api/contact ───────────────────────────
-     Google tag AW-18361474386 is installed in <head>.
-     When you create conversion actions in Google Ads, paste
-     the full send_to values (AW-…/label) below.
+  /* ── Lead form → /api/contact → /thank-you ──────────────
+     Conversion tag fires on the thank-you destination page.
      ────────────────────────────────────────────────────── */
   var ADS_ID='AW-18361474386';
-  var form=document.getElementById('lead-form'), thanks=document.getElementById('thanks');
+  var form=document.getElementById('lead-form');
   if(form){
     form.addEventListener('submit',async function(ev){
       ev.preventDefault();
@@ -671,12 +669,9 @@ form.is-sent{display:none;}
         });
         var json=await res.json().catch(function(){return {};});
         if(res.ok&&json.ok){
-          if(typeof gtag==='function'){
-            gtag('event','generate_lead',{send_to:ADS_ID,value:1.0,currency:'USD'});
-            gtag('event','conversion',{send_to:ADS_ID,value:1.0,currency:'USD'});
-          }
-          form.classList.add('is-sent'); thanks.classList.add('is-visible');
-          thanks.scrollIntoView({block:'center'});
+          /* Destination URL conversion fires on /thank-you */
+          location.href='/thank-you?from=custom-software';
+          return;
         } else {
           alert(json.error||'Could not send. Please email info@mitchelturner.dev directly.');
           if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}

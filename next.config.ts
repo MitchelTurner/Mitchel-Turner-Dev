@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
       { source: "/web-design", destination: "/web-design.html" },
       { source: "/custom-software", destination: "/custom-software.html" },
       { source: "/hardware", destination: "/hardware.html" },
+      { source: "/thank-you", destination: "/thank-you.html" },
     ];
   },
 };

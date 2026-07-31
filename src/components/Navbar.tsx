@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { LogoMark } from "@/components/LogoMark";
 
 const links = [
   { href: "/", label: "Work" },
@@ -13,44 +13,48 @@ const links = [
 export function Navbar() {
   const pathname = usePathname();
   const onAdmin = pathname.startsWith("/admin");
+  const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    if (onAdmin) return;
+    const onScroll = () => setStuck(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [onAdmin]);
 
   // Admin is intentionally unlisted — no nav links on public pages.
   if (onAdmin) return null;
 
   return (
-    <header className="sticky top-0 z-50">
-      <div className="mx-auto mt-4 max-w-6xl px-4">
-        <nav className="glass-strong flex items-center justify-between rounded-2xl px-5 py-3 shadow-lg shadow-black/30">
-          <Link href="/" className="group flex items-center gap-2.5">
-            <LogoMark className="h-8 w-8 shrink-0 rounded-xl shadow-lg shadow-cyan-500/30 transition group-hover:shadow-cyan-500/45" />
-            <span className="text-lg font-semibold tracking-tight">
-              mitchelturner<span className="text-white/40">.dev</span>
-            </span>
-          </Link>
+    <nav className={`site-nav${stuck ? " is-stuck" : ""}`} id="site-nav">
+      <Link href="/" className="site-wordmark">
+        Mitchel Turner <em>Dev</em>
+      </Link>
 
-          <div className="flex items-center gap-1">
-            {links.map((link) => {
-              const active =
-                link.href === "/"
-                  ? pathname === "/"
-                  : pathname.startsWith(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
-                    active
-                      ? "bg-white/10 text-white"
-                      : "text-white/60 hover:text-white hover:bg-white/5"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </div>
-        </nav>
+      <div className="site-nav-right">
+        <span className="site-nav-loc">55°20′N 131°38′W · Ketchikan, AK</span>
+        <div className="site-nav-links">
+          {links.map((link) => {
+            const active =
+              link.href === "/"
+                ? pathname === "/"
+                : pathname.startsWith(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`site-nav-link${active ? " is-active" : ""}`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
+        <Link href="/contact" className="site-btn site-btn--primary site-btn--sm">
+          <span>Get a quote</span>
+        </Link>
       </div>
-    </header>
+    </nav>
   );
 }

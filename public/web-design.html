@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Web Design for Alaska Businesses — Mitchel Turner Dev, Ketchikan AK</title>
 <meta name="description" content="Custom websites for Alaska businesses, built in Ketchikan. Work directly with the developer writing the code. Quote back in 48 hours.">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18361474386"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18361474386');
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -636,8 +644,11 @@ form.is-sent{display:none;}
   }
 
   /* ── Lead form → /api/contact ───────────────────────────
-     Swap send_to for the real conversion labels from Google Ads.
+     Google tag AW-18361474386 is installed in <head>.
+     When you create conversion actions in Google Ads, paste
+     the full send_to values (AW-…/label) below.
      ────────────────────────────────────────────────────── */
+  var ADS_ID='AW-18361474386';
   var form=document.getElementById('lead-form'), thanks=document.getElementById('thanks');
   if(form){
     form.addEventListener('submit',async function(ev){
@@ -665,7 +676,10 @@ form.is-sent{display:none;}
         });
         var json=await res.json().catch(function(){return {};});
         if(res.ok&&json.ok){
-          if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
+          if(typeof gtag==='function'){
+            gtag('event','generate_lead',{send_to:ADS_ID,value:1.0,currency:'USD'});
+            gtag('event','conversion',{send_to:ADS_ID,value:1.0,currency:'USD'});
+          }
           form.classList.add('is-sent'); thanks.classList.add('is-visible');
           thanks.scrollIntoView({block:'center'});
         } else {
@@ -680,7 +694,10 @@ form.is-sent{display:none;}
   }
   document.querySelectorAll('[data-track]').forEach(function(el){
     el.addEventListener('click',function(){
-      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/'+(el.dataset.track==='call'?'CALL_LABEL':'EMAIL_LABEL')});
+      if(typeof gtag==='function'){
+        var method=el.dataset.track==='call'?'phone':'email';
+        gtag('event','contact',{send_to:ADS_ID,method:method});
+      }
     });
   });
 })();

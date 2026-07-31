@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Custom Software for Alaska Businesses — Mitchel Turner Dev, Ketchikan AK</title>
+<meta name="description" content="Custom web apps, dashboards, and integrations built for Alaska operators. Ketchikan-based developer, fixed-price scope, direct access. Free scoping call.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DEEP WATER AT NIGHT — shared system with /web-design.
+   Extract this block to one stylesheet when these move into
+   the Vite project.
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --abyss:#04101A;
+  --deep:#0A1E2B;
+  --surface:rgba(255,255,255,.045);
+  --edge:rgba(255,255,255,.10);
+  --edge-lit:rgba(255,255,255,.22);
+
+  --bio:#3DFFC0;
+  --glacier:#35C6FF;
+  --magenta:#FF2D8E;
+
+  --ice:#EAF6FA;
+  --fog:#8AA3B0;
+
+  --display:"Bricolage Grotesque","Helvetica Neue",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
+  --body:"Inter Tight",-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+
+  --gutter:clamp(20px,5vw,72px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;background:var(--abyss);color:var(--ice);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;}
+  [data-reveal]{opacity:1!important;transform:none!important;}
+}
+
+.grain{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0;z-index:9998;
+  background:linear-gradient(90deg,var(--glacier),var(--bio),var(--magenta));
+  box-shadow:0 0 14px rgba(61,255,192,.6);
+}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--gutter);
+  transition:background .4s var(--ease),backdrop-filter .4s var(--ease),border-color .4s;
+  border-bottom:1px solid transparent;
+}
+.nav.is-stuck{
+  background:rgba(4,16,26,.72);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  border-bottom-color:var(--edge);
+}
+.wordmark{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:-.02em;text-decoration:none;color:var(--ice);}
+.wordmark em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--bio);}
+.nav-right{display:flex;align-items:center;gap:22px;}
+.nav-loc{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);}
+@media(max-width:760px){.nav-loc{display:none;}}
+
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  padding:15px 26px;border-radius:100px;text-decoration:none;cursor:pointer;
+  border:1px solid transparent;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s,border-color .3s;
+}
+.btn span{position:relative;z-index:2;}
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.38) 50%,transparent 62%);
+  transform:translateX(-130%);transition:transform .75s var(--ease);
+}
+.btn:hover::after{transform:translateX(130%);}
+.btn--primary{background:var(--magenta);color:#fff;box-shadow:0 6px 30px -6px rgba(255,45,142,.7);}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 14px 44px -8px rgba(255,45,142,.85);}
+.btn--ghost{border-color:var(--edge-lit);color:var(--ice);background:var(--surface);backdrop-filter:blur(8px);}
+.btn--ghost:hover{transform:translateY(-2px);border-color:var(--bio);box-shadow:0 0 30px -6px rgba(61,255,192,.5);}
+.btn--sm{padding:11px 20px;font-size:11px;}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--bio);outline-offset:3px;}
+
+h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,7.4vw,96px);line-height:.95;letter-spacing:-.045em;margin:0 0 26px;max-width:16ch;}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(32px,5vw,62px);line-height:1.0;letter-spacing:-.035em;margin:0 0 20px;max-width:20ch;}
+h3{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0 0 9px;}
+p{margin:0 0 16px;}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;}
+.lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:56ch;color:var(--fog);}
+.grad{background:linear-gradient(100deg,var(--bio),var(--glacier) 52%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bio);margin:0 0 24px;padding:8px 15px;
+  border:1px solid rgba(61,255,192,.3);border-radius:100px;background:rgba(61,255,192,.06);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--bio);box-shadow:0 0 10px var(--bio);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.75);}}
+
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);}
+[data-reveal].in{opacity:1;transform:none;}
+
+.band{position:relative;padding:clamp(76px,11vw,150px) var(--gutter);}
+.band--edge{border-top:1px solid var(--edge);}
+.inner{max-width:1240px;margin:0 auto;position:relative;z-index:2;}
+
+/* ═══ HERO ═══ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:130px var(--gutter) 90px;overflow:hidden;}
+.aurora{position:absolute;inset:-25%;z-index:0;filter:blur(100px);opacity:.6;}
+.aurora i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;}
+.aurora i:nth-child(1){width:50vw;height:50vw;right:-6%;top:4%;background:radial-gradient(circle,rgba(53,198,255,.55),transparent 68%);animation:drift1 28s ease-in-out infinite alternate;}
+.aurora i:nth-child(2){width:44vw;height:44vw;left:-8%;top:26%;background:radial-gradient(circle,rgba(61,255,192,.5),transparent 68%);animation:drift2 34s ease-in-out infinite alternate;}
+.aurora i:nth-child(3){width:36vw;height:36vw;left:44%;bottom:-16%;background:radial-gradient(circle,rgba(255,45,142,.36),transparent 68%);animation:drift3 40s ease-in-out infinite alternate;}
+@keyframes drift1{to{transform:translate(-13%,12%) scale(1.16);}}
+@keyframes drift2{to{transform:translate(12%,-11%) scale(1.14);}}
+@keyframes drift3{to{transform:translate(-9%,-13%) scale(1.2);}}
+
+/* Data grid + sonar sweep */
+.gridfield{
+  position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(rgba(53,198,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(53,198,255,.07) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 10%,transparent 68%);
+  mask-image:radial-gradient(ellipse at 50% 45%,#000 10%,transparent 68%);
+}
+.radar{position:absolute;left:50%;top:46%;width:min(1400px,145vw);aspect-ratio:1;transform:translate(-50%,-50%);z-index:1;pointer-events:none;opacity:.5;}
+.radar .rings{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(61,255,192,.09);}
+.radar .rings::before,.radar .rings::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(61,255,192,.09);}
+.radar .rings::before{inset:20%;}
+.radar .rings::after{inset:38%;}
+.radar .sweep{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 296deg,rgba(53,198,255,.04) 330deg,rgba(53,198,255,.15) 356deg,rgba(53,198,255,.3) 359.4deg,transparent 360deg);
+  animation:sweep 11s linear infinite;
+  -webkit-mask-image:radial-gradient(circle,#000 0 56%,transparent 74%);
+  mask-image:radial-gradient(circle,#000 0 56%,transparent 74%);
+}
+@keyframes sweep{to{transform:rotate(360deg);}}
+.hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 28%,rgba(4,16,26,.7) 76%,var(--abyss) 100%);}
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1fr;gap:48px;align-items:end;max-width:1240px;margin:0 auto;width:100%;}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.5fr .8fr;gap:64px;}}
+
+.reveal-line{display:block;overflow:hidden;padding-bottom:.06em;}
+.reveal-line > span{display:inline-block;transform:translateY(108%);transition:transform 1s var(--ease);}
+body.loaded .reveal-line > span{transform:none;}
+.reveal-line:nth-of-type(2) > span{transition-delay:.1s;}
+.reveal-line:nth-of-type(3) > span{transition-delay:.2s;}
+
+.glass{
+  position:relative;border:1px solid var(--edge);border-radius:20px;
+  background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.02));
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  overflow:hidden;
+}
+.glass::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--edge-lit),transparent);}
+.spec{padding:28px 28px 10px;}
+.spec dl{margin:0;}
+.spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:5px;}
+.spec dd{margin:0 0 20px;font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:1.15;}
+.spec dd small{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:15px;color:var(--fog);letter-spacing:0;margin-top:3px;}
+
+.hero-actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;}
+.hero-stats{display:flex;flex-wrap:wrap;gap:34px;margin-top:52px;padding-top:30px;border-top:1px solid var(--edge);}
+.stat .n{font-family:var(--display);font-weight:800;font-size:clamp(30px,3.6vw,46px);letter-spacing:-.04em;line-height:1;}
+.stat .l{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);margin-top:8px;}
+
+.marquee{overflow:hidden;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:20px 0;background:rgba(255,255,255,.018);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
+.mtrack{display:flex;width:max-content;animation:scroll 40s linear infinite;}
+.marquee:hover .mtrack{animation-play-state:paused;}
+@keyframes scroll{to{transform:translateX(-50%);}}
+.mtrack span{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:30px;}
+.mtrack span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--bio);flex:none;}
+
+/* ═══ HAZARDS — "the leak" ═══ */
+.hazards{margin:52px 0 0;padding:0;list-style:none;}
+.hazards li{
+  position:relative;padding:24px 24px 24px 62px;
+  border-top:1px solid var(--edge);font-size:clamp(17px,1.7vw,19.5px);
+  transition:background .4s var(--ease),padding-left .4s var(--ease);
+}
+.hazards li:last-child{border-bottom:1px solid var(--edge);}
+.hazards li:hover{background:rgba(255,255,255,.03);padding-left:70px;}
+.hazards li::before,.hazards li::after{
+  content:"";position:absolute;background:var(--magenta);
+  box-shadow:0 0 12px rgba(255,45,142,.8);transition:transform .4s var(--ease);
+}
+.hazards li::before{left:22px;top:calc(50% - .5px);width:16px;height:1.5px;}
+.hazards li::after{left:29px;top:calc(50% - 8px);width:1.5px;height:16px;}
+.hazards li:hover::before,.hazards li:hover::after{transform:rotate(45deg);}
+
+/* ═══ Bento capabilities ═══ */
+.bento{display:grid;grid-template-columns:1fr;gap:14px;margin-top:52px;}
+@media(min-width:640px){.bento{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.bento{grid-template-columns:repeat(6,1fr);gap:16px;}}
+.cell{
+  position:relative;padding:30px 28px;border-radius:20px;border:1px solid var(--edge);
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.014));
+  overflow:hidden;transition:border-color .4s var(--ease),transform .4s var(--ease);
+}
+.cell::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s;
+  background:radial-gradient(460px circle at var(--mx,50%) var(--my,50%),rgba(61,255,192,.16),transparent 62%);
+}
+.cell:hover{border-color:var(--edge-lit);transform:translateY(-3px);}
+.cell:hover::before{opacity:1;}
+.cell p{margin:0;font-size:15.5px;color:var(--fog);position:relative;}
+.cell h3,.cell .idx{position:relative;}
+.idx{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--glacier);display:block;margin-bottom:16px;}
+@media(min-width:900px){
+  .cell{grid-column:span 2;}
+  .cell--a{grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:300px;}
+  .cell--a h3{font-size:clamp(24px,2.6vw,34px);letter-spacing:-.03em;line-height:1.05;max-width:15ch;}
+  .cell--a p{font-size:17px;max-width:46ch;}
+}
+
+/* ═══ DR PLOT ═══ */
+.track{margin-top:60px;}
+.track ol{list-style:none;margin:0;padding:0;display:grid;gap:0;}
+@media(min-width:900px){.track ol{grid-template-columns:repeat(5,1fr);}}
+.fix{position:relative;padding:0 0 40px 40px;}
+@media(min-width:900px){.fix{padding:52px 22px 0 0;}}
+.fix .line{
+  position:absolute;left:9px;top:24px;bottom:0;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--bio),var(--glacier));
+  box-shadow:0 0 16px rgba(61,255,192,.55);
+  transform:scaleY(0);transform-origin:top;transition:transform .85s var(--ease);
+}
+@media(min-width:900px){
+  .fix .line{left:20px;right:0;top:19px;bottom:auto;width:auto;height:2px;
+    background:linear-gradient(90deg,var(--bio),var(--glacier));transform:scaleX(0);transform-origin:left;}
+}
+.fix:last-child .line{display:none;}
+.track.is-plotted .line{transform:scale(1);}
+.track.is-plotted .fix:nth-child(2) .line{transition-delay:.3s;}
+.track.is-plotted .fix:nth-child(3) .line{transition-delay:.6s;}
+.track.is-plotted .fix:nth-child(4) .line{transition-delay:.9s;}
+.fix .mark{
+  position:absolute;left:0;top:12px;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--bio);display:grid;place-items:center;background:var(--abyss);
+  opacity:0;transform:scale(.4);transition:opacity .5s var(--ease),transform .5s var(--ease);
+}
+@media(min-width:900px){.fix .mark{left:11px;top:9px;}}
+.fix .mark::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--bio);box-shadow:0 0 14px var(--bio);}
+.track.is-plotted .mark{opacity:1;transform:scale(1);}
+.track.is-plotted .fix:nth-child(2) .mark{transition-delay:.3s;}
+.track.is-plotted .fix:nth-child(3) .mark{transition-delay:.6s;}
+.track.is-plotted .fix:nth-child(4) .mark{transition-delay:.9s;}
+.track.is-plotted .fix:nth-child(5) .mark{transition-delay:1.2s;}
+.leg{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:10px;}
+.fix h3{font-size:19px;}
+.fix p{font-size:15px;color:var(--fog);margin:0;}
+
+/* ═══ Stack ═══ */
+.stackgrid{display:grid;grid-template-columns:1fr;gap:0;margin-top:44px;border-top:1px solid var(--edge);}
+.stackgrid div{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--edge);align-items:baseline;}
+@media(max-width:560px){.stackgrid div{grid-template-columns:1fr;gap:6px;}}
+.stackgrid dt{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin:0;}
+.stackgrid dd{margin:0;font-family:var(--mono);font-size:14.5px;letter-spacing:.02em;color:var(--ice);}
+
+/* ═══ Form ═══ */
+.form-grid{display:grid;grid-template-columns:1fr;gap:48px;}
+@media(min-width:960px){.form-grid{grid-template-columns:.85fr 1.15fr;gap:72px;}}
+.formwrap{padding:34px;}
+@media(max-width:520px){.formwrap{padding:24px;}}
+.field{margin-bottom:18px;position:relative;}
+.field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:8px;}
+.field input,.field select,.field textarea{
+  width:100%;padding:14px 16px;border-radius:12px;
+  font-family:var(--body);font-size:16px;color:var(--ice);
+  background:rgba(255,255,255,.05);border:1px solid var(--edge);
+  transition:border-color .3s,box-shadow .3s,background .3s;
+}
+.field input::placeholder,.field textarea::placeholder{color:#5D7885;}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--bio);background:rgba(255,255,255,.075);
+  box-shadow:0 0 0 4px rgba(61,255,192,.12);
+}
+.field select{appearance:none;-webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--fog) 50%),linear-gradient(135deg,var(--fog) 50%,transparent 50%);
+  background-position:calc(100% - 21px) 24px,calc(100% - 16px) 24px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+.field select option{background:var(--deep);color:var(--ice);}
+.field textarea{min-height:118px;resize:vertical;}
+.field-row{display:grid;grid-template-columns:1fr;gap:0 18px;}
+@media(min-width:560px){.field-row{grid-template-columns:1fr 1fr;}}
+.formnote{font-size:13px;color:var(--fog);margin-top:16px;}
+.contact-line{display:block;font-family:var(--mono);font-size:15px;letter-spacing:.02em;color:var(--bio);text-decoration:none;margin-top:6px;transition:color .3s;}
+.contact-line:hover{color:var(--ice);}
+.thanks{display:none;padding:34px;}
+.thanks.is-visible{display:block;}
+form.is-sent{display:none;}
+
+.dock{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,150%);z-index:950;
+  display:flex;align-items:center;gap:18px;padding:11px 11px 11px 24px;border-radius:100px;
+  background:rgba(10,30,43,.82);backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid var(--edge-lit);box-shadow:0 20px 60px -14px rgba(0,0,0,.75);
+  transition:transform .55s var(--ease);width:calc(100% - 32px);max-width:540px;justify-content:space-between;
+}
+.dock.is-up{transform:translate(-50%,0);}
+.dock p{margin:0;font-size:14px;color:var(--fog);}
+.dock b{color:var(--ice);font-weight:600;}
+@media(max-width:560px){.dock p{display:none;}.dock{justify-content:center;padding:11px;}}
+
+.footer{
+  padding:44px var(--gutter) 120px;border-top:1px solid var(--edge);
+  display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);
+}
+.footer a{color:var(--bio);text-decoration:none;}
+.footer a:hover{color:var(--ice);}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<nav class="nav" id="nav">
+  <a class="wordmark" href="/">Mitchel Turner <em>Dev</em></a>
+  <div class="nav-right">
+    <span class="nav-loc">55°20′N 131°38′W · Ketchikan, AK</span>
+    <a class="btn btn--primary btn--sm" href="#start"><span>Book a call</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="gridfield" aria-hidden="true"></div>
+  <div class="radar" aria-hidden="true"><div class="rings"></div><div class="sweep"></div></div>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow"><span class="dot"></span> Custom software · built in Alaska</p>
+      <h1>
+        <span class="reveal-line"><span>Software shaped</span></span>
+        <span class="reveal-line"><span>around how you</span></span>
+        <span class="reveal-line"><span><em class="serif grad">actually</em> work.</span></span>
+      </h1>
+      <p class="lede">Custom web apps, dashboards, billing flows, and integrations for Alaska operators — scoped at a fixed price and built by the person you talk to. When the spreadsheet, the whiteboard, and three separate subscriptions stop holding it together, this is what comes next.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn--primary" href="#start"><span>Book a scoping call →</span></a>
+        <a class="btn btn--ghost" href="#build"><span>What I build</span></a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><div class="n"><span data-count="45">0</span> min</div><div class="l">Free scoping call</div></div>
+        <div class="stat"><div class="n"><span data-count="6">0</span>–<span data-count="10">0</span></div><div class="l">Weeks to v1</div></div>
+        <div class="stat"><div class="n" data-count="0">0</div><div class="l">Lock-in clauses</div></div>
+      </div>
+    </div>
+
+    <aside class="glass spec" data-reveal>
+      <dl>
+        <dt>Scoping call</dt>
+        <dd>Free, 45 minutes<small>You keep the write-up either way</small></dd>
+        <dt>Pricing</dt>
+        <dd>Fixed price per phase</dd>
+        <dt>First working version</dt>
+        <dd>Usually 6–10 weeks</dd>
+        <dt>Who writes the code</dt>
+        <dd>Me<small>That's the whole team</small></dd>
+      </dl>
+    </aside>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mtrack">
+    <span>NestJS</span><span>PostgreSQL</span><span>Prisma</span><span>React</span><span>Vite</span><span>Tailwind</span><span>Redis</span><span>BullMQ</span><span>Stripe</span><span>Railway</span>
+    <span>NestJS</span><span>PostgreSQL</span><span>Prisma</span><span>React</span><span>Vite</span><span>Tailwind</span><span>Redis</span><span>BullMQ</span><span>Stripe</span><span>Railway</span>
+  </div>
+</div>
+
+<!-- ═══ HAZARDS ═══ -->
+<section class="band">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Shoal water</p>
+    <h2 data-reveal>Nobody decides to buy software. They notice the <span class="serif grad">leak</span>.</h2>
+    <p class="lede" data-reveal>If two or more of these sound like your week, it's worth a conversation.</p>
+
+    <ul class="hazards">
+      <li data-reveal>The same information gets typed into three places, and by Friday they disagree.</li>
+      <li data-reveal>One spreadsheet runs a critical part of the business, and exactly one person understands it.</li>
+      <li data-reveal>Invoicing, deposits, or payroll eat a full day every month that nobody has.</li>
+      <li data-reveal>You pay for software that does 20% of what you need and blocks the other 80%.</li>
+      <li data-reveal>Two systems can't talk to each other, so a person is the integration.</li>
+      <li data-reveal>You can't answer a basic question about last season without rebuilding the numbers by hand.</li>
+      <li data-reveal>Growth means hiring another admin instead of selling more.</li>
+    </ul>
+
+    <p class="lede" data-reveal style="margin-top:36px;color:var(--ice);">A 45-minute call will tell you whether custom software is worth it — or whether an off-the-shelf tool you haven't tried yet does the job for a fraction of the price. I'll say so if it does.</p>
+  </div>
+</section>
+
+<!-- ═══ CAPABILITIES ═══ -->
+<section class="band band--edge" id="build">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> What I build</p>
+    <h2 data-reveal>Internal tools and customer-facing apps, <span class="serif grad">end to end</span>.</h2>
+    <p class="lede" data-reveal>Front end, back end, database, payments, deployment — one person across the whole stack, so nothing falls between contractors.</p>
+
+    <div class="bento">
+      <article class="cell cell--a" data-tilt data-reveal>
+        <span class="idx">01</span>
+        <h3>Booking &amp; scheduling that knows your season.</h3>
+        <p>Reservations, charter and tour slots, moorage, equipment, crew rosters — with the seasonal, tidal, and weather rules your business actually runs on, not a generic calendar you fight every week.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">02</span><h3>Billing &amp; payments</h3>
+        <p>Stripe deposits, recurring invoices, split payments, refunds, and receipts that reconcile without re-entry.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">03</span><h3>Dashboards &amp; reporting</h3>
+        <p>The numbers you check every morning, on one screen, current — not a spreadsheet someone rebuilds weekly.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">04</span><h3>Integrations &amp; APIs</h3>
+        <p>Two systems that were never meant to talk, syncing on a schedule, with nobody in the middle.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">05</span><h3>Field &amp; ops tools</h3>
+        <p>Dispatch, job tracking, inspections, and forms that work on a phone in a boat or a truck — including when the signal drops.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">06</span><h3>Data cleanup &amp; migration</h3>
+        <p>Fifteen years of records out of a legacy system or a stack of spreadsheets, into something queryable.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
+<section class="band band--edge">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> How it runs · five legs</p>
+    <h2 data-reveal>Fixed price per leg. <span class="serif grad">No open meters.</span></h2>
+    <p class="lede" data-reveal>Every phase is scoped and priced before it starts. You can stop after any leg and keep everything built so far.</p>
+
+    <div class="track" id="track">
+      <ol>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 01 · free</span><h3>Scoping call</h3>
+          <p>Walk me through how the work flows now, including the parts held together by memory and habit.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 02 · 1 wk</span><h3>Written scope</h3>
+          <p>What gets built, what doesn't, what it costs, how long. Yours to keep and to shop around.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 03 · 6–10 wks</span><h3>Build in two-week runs</h3>
+          <p>Working software you can click through at the end of every run. No six-month silence.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 04 · 1 wk</span><h3>Launch &amp; training</h3>
+          <p>Real data migrated, your team walked through it, written docs left behind.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 05 · ongoing</span><h3>Support</h3>
+          <p>Monthly retainer or hourly, your call. Either way you keep the code and the database.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STACK ═══ -->
+<section class="band band--edge">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Under the hood</p>
+    <h2 data-reveal>Boring, proven tools — chosen so <span class="serif grad">someone else</span> could pick this up.</h2>
+
+    <dl class="stackgrid" data-reveal>
+      <div><dt>Back end</dt><dd>NestJS · PostgreSQL · Prisma · Redis · BullMQ</dd></div>
+      <div><dt>Front end</dt><dd>React · Vite · Tailwind</dd></div>
+      <div><dt>Payments</dt><dd>Stripe</dd></div>
+      <div><dt>Hosting</dt><dd>Railway, or your own infrastructure</dd></div>
+      <div><dt>Handover</dt><dd>Your repo, your database, your accounts — documented</dd></div>
+    </dl>
+
+    <p class="lede" data-reveal style="margin-top:34px;color:var(--ice);max-width:62ch;">No proprietary framework only I can maintain, and no lock-in clause. If you ever want to bring the work in house or hand it to another developer, the code is yours and it's written to be read.</p>
+  </div>
+</section>
+
+<!-- ═══ FORM ═══ -->
+<section class="band band--edge" id="start">
+  <div class="inner">
+    <div class="form-grid">
+      <div>
+        <p class="eyebrow" data-reveal><span class="dot"></span> Book a scoping call</p>
+        <h2 data-reveal>Start with a conversation, not a <span class="serif grad">contract</span>.</h2>
+        <p class="lede" data-reveal>Forty-five minutes, no charge, no obligation. You'll leave with a written summary of what I'd build, roughly what it costs, and an honest answer about whether you need it at all.</p>
+        <div data-reveal style="margin-top:34px;">
+          <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
+          <a class="contact-line" href="tel:+19075550100" data-track="call">(907) 555-0100</a>
+          <a class="contact-line" href="mailto:hello@mitchelturner.dev" data-track="email">hello@mitchelturner.dev</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="glass formwrap" data-reveal>
+          <form id="lead-form" novalidate>
+            <div class="field-row">
+              <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
+              <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" autocomplete="organization" required></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+              <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="industry">Industry</label>
+                <select id="industry" name="industry">
+                  <option>Marine / charter / marina</option><option>Tourism / lodging</option>
+                  <option>Construction / trades</option><option>Retail / food service</option>
+                  <option>Government / tribal / nonprofit</option><option>Other</option>
+                </select>
+              </div>
+              <div class="field"><label for="timeline">Timeline</label>
+                <select id="timeline" name="timeline">
+                  <option>As soon as possible</option><option>Next 1–3 months</option>
+                  <option>Before next season</option><option>Still exploring</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label for="details">What's the process that isn't working?</label>
+              <textarea id="details" name="details" placeholder="Describe it the way you'd describe it to a new hire — the spreadsheet, the double entry, the thing that eats every Monday."></textarea>
+            </div>
+            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Request a scoping call →</span></button>
+            <p class="formnote">No newsletter, no drip sequence. Your details go to one inbox — mine.</p>
+          </form>
+
+          <div class="thanks" id="thanks" role="status">
+            <h3 style="font-size:28px;">Sent.</h3>
+            <p style="color:var(--fog);margin:0;">I've got it. I'll reply within one business day with a couple of times for the call, from my own email address.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>Mitchel Turner Dev, LLC · Ketchikan, Alaska</span>
+  <span><a href="/web-design">Web design</a> · <a href="/">Home</a></span>
+</footer>
+
+<div class="dock" id="dock">
+  <p><b>Free 45-minute call.</b> You keep the write-up.</p>
+  <a class="btn btn--primary btn--sm" href="#start"><span>Book it</span></a>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  requestAnimationFrame(function(){ document.body.classList.add('loaded'); });
+
+  var bar=document.getElementById('progress'), nav=document.getElementById('nav'), dock=document.getElementById('dock');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-innerHeight;
+    bar.style.width=(h>0?(scrollY/h)*100:0)+'%';
+    nav.classList.toggle('is-stuck', scrollY>40);
+    dock.classList.toggle('is-up', scrollY>innerHeight*0.85 && scrollY<h-560);
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  if('IntersectionObserver' in window && !reduce){
+    var ro=new IntersectionObserver(function(es){
+      es.forEach(function(e,i){ if(e.isIntersecting){ e.target.style.transitionDelay=(i*60)+'ms'; e.target.classList.add('in'); ro.unobserve(e.target);} });
+    },{threshold:.12,rootMargin:'0px 0px -50px'});
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ro.observe(el);});
+  } else { document.querySelectorAll('[data-reveal]').forEach(function(el){el.classList.add('in');}); }
+
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    document.querySelectorAll('[data-tilt]').forEach(function(c){
+      c.addEventListener('mousemove',function(e){
+        var r=c.getBoundingClientRect();
+        c.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        c.style.setProperty('--my',(e.clientY-r.top)+'px');
+      });
+    });
+  }
+
+  var counted=false;
+  function count(){
+    if(counted) return; counted=true;
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var t=+el.dataset.count, s=performance.now(), d=1100;
+      if(reduce||t===0){ el.textContent=t; return; }
+      requestAnimationFrame(function step(now){
+        var p=Math.min((now-s)/d,1), e=1-Math.pow(1-p,3);
+        el.textContent=Math.round(t*e);
+        if(p<1) requestAnimationFrame(step);
+      });
+    });
+  }
+  var stats=document.querySelector('.hero-stats');
+  if(stats && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){count();o.disconnect();}});},{threshold:.4}).observe(stats);
+  } else count();
+
+  var track=document.getElementById('track');
+  if(track){
+    if(reduce||!('IntersectionObserver' in window)) track.classList.add('is-plotted');
+    else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
+  }
+
+  /* ── Lead form ──────────────────────────────────────────
+     Point fetch() at your endpoint; swap send_to for the real
+     conversion labels from the Google Ads UI.
+     ────────────────────────────────────────────────────── */
+  var form=document.getElementById('lead-form'), thanks=document.getElementById('thanks');
+  if(form){
+    form.addEventListener('submit',function(ev){
+      ev.preventDefault();
+      if(!form.checkValidity()){form.reportValidity();return;}
+      var payload=Object.fromEntries(new FormData(form).entries());
+      payload.source='custom-software-landing';
+
+      // fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+
+      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
+      form.classList.add('is-sent'); thanks.classList.add('is-visible');
+      thanks.scrollIntoView({block:'center'});
+    });
+  }
+  document.querySelectorAll('[data-track]').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/'+(el.dataset.track==='call'?'CALL_LABEL':'EMAIL_LABEL')});
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Web Design for Alaska Businesses — Mitchel Turner Dev, Ketchikan AK</title>
+<meta name="description" content="Custom websites for Alaska businesses, built in Ketchikan. Work directly with the developer writing the code. Quote back in 48 hours.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DEEP WATER AT NIGHT
+   Abyssal base · aurora + bioluminescence accents · chart
+   magenta held back for actions only. Southeast Alaska after
+   the light goes, which is most of the year.
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --abyss:#04101A;
+  --deep:#0A1E2B;
+  --surface:rgba(255,255,255,.045);
+  --edge:rgba(255,255,255,.10);
+  --edge-lit:rgba(255,255,255,.22);
+
+  --bio:#3DFFC0;
+  --glacier:#35C6FF;
+  --magenta:#FF2D8E;
+
+  --ice:#EAF6FA;
+  --fog:#8AA3B0;
+
+  --display:"Bricolage Grotesque","Helvetica Neue",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
+  --body:"Inter Tight",-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+
+  --gutter:clamp(20px,5vw,72px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;background:var(--abyss);color:var(--ice);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;}
+  [data-reveal]{opacity:1!important;transform:none!important;}
+}
+
+.grain{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0;z-index:9998;
+  background:linear-gradient(90deg,var(--glacier),var(--bio),var(--magenta));
+  box-shadow:0 0 14px rgba(61,255,192,.6);
+}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--gutter);
+  transition:background .4s var(--ease),backdrop-filter .4s var(--ease),border-color .4s;
+  border-bottom:1px solid transparent;
+}
+.nav.is-stuck{
+  background:rgba(4,16,26,.72);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  border-bottom-color:var(--edge);
+}
+.wordmark{
+  font-family:var(--display);font-weight:800;font-size:16px;
+  letter-spacing:-.02em;text-decoration:none;color:var(--ice);
+}
+.wordmark em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--bio);}
+.nav-right{display:flex;align-items:center;gap:22px;}
+.nav-loc{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);}
+@media(max-width:760px){.nav-loc{display:none;}}
+
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  padding:15px 26px;border-radius:100px;text-decoration:none;cursor:pointer;
+  border:1px solid transparent;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s,border-color .3s;
+}
+.btn span{position:relative;z-index:2;}
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.38) 50%,transparent 62%);
+  transform:translateX(-130%);transition:transform .75s var(--ease);
+}
+.btn:hover::after{transform:translateX(130%);}
+.btn--primary{background:var(--magenta);color:#fff;box-shadow:0 6px 30px -6px rgba(255,45,142,.7);}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 14px 44px -8px rgba(255,45,142,.85);}
+.btn--ghost{border-color:var(--edge-lit);color:var(--ice);background:var(--surface);backdrop-filter:blur(8px);}
+.btn--ghost:hover{transform:translateY(-2px);border-color:var(--bio);box-shadow:0 0 30px -6px rgba(61,255,192,.5);}
+.btn--sm{padding:11px 20px;font-size:11px;}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--bio);outline-offset:3px;
+}
+
+h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(44px,8vw,104px);line-height:.94;letter-spacing:-.045em;
+  margin:0 0 26px;max-width:15ch;
+}
+h2{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(32px,5vw,62px);line-height:1.0;letter-spacing:-.035em;
+  margin:0 0 20px;max-width:19ch;
+}
+h3{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0 0 9px;}
+p{margin:0 0 16px;}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;}
+.lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:56ch;color:var(--fog);}
+.grad{
+  background:linear-gradient(100deg,var(--bio),var(--glacier) 52%,var(--magenta));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bio);margin:0 0 24px;
+  padding:8px 15px;border:1px solid rgba(61,255,192,.3);border-radius:100px;
+  background:rgba(61,255,192,.06);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--bio);box-shadow:0 0 10px var(--bio);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.75);}}
+
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);}
+[data-reveal].in{opacity:1;transform:none;}
+
+.band{position:relative;padding:clamp(76px,11vw,150px) var(--gutter);}
+.band--edge{border-top:1px solid var(--edge);}
+.inner{max-width:1240px;margin:0 auto;position:relative;z-index:2;}
+
+/* ═══ HERO ═══ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:130px var(--gutter) 90px;overflow:hidden;}
+.aurora{position:absolute;inset:-25%;z-index:0;filter:blur(100px);opacity:.6;}
+.aurora i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;}
+.aurora i:nth-child(1){width:52vw;height:52vw;left:-8%;top:6%;background:radial-gradient(circle,rgba(61,255,192,.55),transparent 68%);animation:drift1 26s ease-in-out infinite alternate;}
+.aurora i:nth-child(2){width:46vw;height:46vw;right:-6%;top:22%;background:radial-gradient(circle,rgba(53,198,255,.5),transparent 68%);animation:drift2 32s ease-in-out infinite alternate;}
+.aurora i:nth-child(3){width:38vw;height:38vw;left:36%;bottom:-14%;background:radial-gradient(circle,rgba(255,45,142,.38),transparent 68%);animation:drift3 38s ease-in-out infinite alternate;}
+@keyframes drift1{to{transform:translate(14%,10%) scale(1.18);}}
+@keyframes drift2{to{transform:translate(-12%,14%) scale(1.12);}}
+@keyframes drift3{to{transform:translate(9%,-14%) scale(1.22);}}
+
+.radar{
+  position:absolute;left:50%;top:46%;width:min(1500px,150vw);aspect-ratio:1;
+  transform:translate(-50%,-50%);z-index:1;pointer-events:none;opacity:.55;
+}
+.radar .rings{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(53,198,255,.09);}
+.radar .rings::before,.radar .rings::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(53,198,255,.09);}
+.radar .rings::before{inset:18%;}
+.radar .rings::after{inset:34%;}
+.radar .sweep{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,
+    transparent 0 296deg,
+    rgba(61,255,192,.04) 330deg,
+    rgba(61,255,192,.15) 356deg,
+    rgba(61,255,192,.30) 359.4deg,
+    transparent 360deg);
+  animation:sweep 9s linear infinite;
+  -webkit-mask-image:radial-gradient(circle,#000 0 58%,transparent 74%);
+  mask-image:radial-gradient(circle,#000 0 58%,transparent 74%);
+}
+@keyframes sweep{to{transform:rotate(360deg);}}
+.hero-vignette{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 40%,transparent 28%,rgba(4,16,26,.7) 76%,var(--abyss) 100%);
+}
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1fr;gap:48px;align-items:end;max-width:1240px;margin:0 auto;width:100%;}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.5fr .8fr;gap:64px;}}
+
+.reveal-line{display:block;overflow:hidden;padding-bottom:.06em;}
+.reveal-line > span{display:inline-block;transform:translateY(108%);transition:transform 1s var(--ease);}
+body.loaded .reveal-line > span{transform:none;}
+.reveal-line:nth-of-type(2) > span{transition-delay:.1s;}
+.reveal-line:nth-of-type(3) > span{transition-delay:.2s;}
+
+.glass{
+  position:relative;border:1px solid var(--edge);border-radius:20px;
+  background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.02));
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  overflow:hidden;
+}
+.glass::before{
+  content:"";position:absolute;top:0;left:12%;right:12%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--edge-lit),transparent);
+}
+.spec{padding:28px 28px 10px;}
+.spec dl{margin:0;}
+.spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:5px;}
+.spec dd{margin:0 0 20px;font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:1.15;}
+.spec dd small{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:15px;color:var(--fog);letter-spacing:0;margin-top:3px;}
+
+.hero-actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;}
+.hero-stats{display:flex;flex-wrap:wrap;gap:34px;margin-top:52px;padding-top:30px;border-top:1px solid var(--edge);}
+.stat .n{font-family:var(--display);font-weight:800;font-size:clamp(30px,3.6vw,46px);letter-spacing:-.04em;line-height:1;}
+.stat .l{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);margin-top:8px;}
+
+.marquee{overflow:hidden;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:20px 0;background:rgba(255,255,255,.018);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
+.mtrack{display:flex;width:max-content;animation:scroll 42s linear infinite;}
+.marquee:hover .mtrack{animation-play-state:paused;}
+@keyframes scroll{to{transform:translateX(-50%);}}
+.mtrack span{
+  font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--fog);padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:30px;
+}
+.mtrack span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--magenta);flex:none;}
+
+.bento{display:grid;grid-template-columns:1fr;gap:14px;margin-top:52px;}
+@media(min-width:640px){.bento{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.bento{grid-template-columns:repeat(6,1fr);gap:16px;}}
+.cell{
+  position:relative;padding:30px 28px;border-radius:20px;border:1px solid var(--edge);
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.014));
+  overflow:hidden;transition:border-color .4s var(--ease),transform .4s var(--ease);
+}
+.cell::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s;
+  background:radial-gradient(460px circle at var(--mx,50%) var(--my,50%),rgba(53,198,255,.16),transparent 62%);
+}
+.cell:hover{border-color:var(--edge-lit);transform:translateY(-3px);}
+.cell:hover::before{opacity:1;}
+.cell p{margin:0;font-size:15.5px;color:var(--fog);position:relative;}
+.cell h3,.cell .idx{position:relative;}
+.idx{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--bio);display:block;margin-bottom:16px;}
+@media(min-width:900px){
+  .cell{grid-column:span 2;}
+  .cell--a{grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:300px;}
+  .cell--a h3{font-size:clamp(24px,2.6vw,34px);letter-spacing:-.03em;line-height:1.05;max-width:15ch;}
+  .cell--a p{font-size:17px;max-width:46ch;}
+}
+
+.work{display:grid;grid-template-columns:1fr;gap:16px;margin-top:52px;}
+@media(min-width:880px){.work{grid-template-columns:repeat(3,1fr);}}
+.wcard{
+  position:relative;border-radius:20px;border:1px solid var(--edge);overflow:hidden;
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.014));
+  padding:28px;transition:transform .45s var(--ease),border-color .45s;
+}
+.wcard::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(61,255,192,.15),transparent 62%);
+}
+.wcard:hover{transform:translateY(-5px);border-color:var(--edge-lit);}
+.wcard:hover::before{opacity:1;}
+.wcard .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:14px;position:relative;}
+.wcard h3,.wcard p{position:relative;}
+.wcard p{font-size:15.5px;color:var(--fog);margin:0;}
+
+/* ═══ DR PLOT — signature ═══ */
+.track{margin-top:60px;}
+.track ol{list-style:none;margin:0;padding:0;display:grid;gap:0;}
+@media(min-width:900px){.track ol{grid-template-columns:repeat(5,1fr);}}
+.fix{position:relative;padding:0 0 40px 40px;}
+@media(min-width:900px){.fix{padding:52px 22px 0 0;}}
+.fix .line{
+  position:absolute;left:9px;top:24px;bottom:0;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--bio),var(--glacier));
+  box-shadow:0 0 16px rgba(61,255,192,.55);
+  transform:scaleY(0);transform-origin:top;transition:transform .85s var(--ease);
+}
+@media(min-width:900px){
+  .fix .line{left:20px;right:0;top:19px;bottom:auto;width:auto;height:2px;
+    background:linear-gradient(90deg,var(--bio),var(--glacier));
+    transform:scaleX(0);transform-origin:left;}
+}
+.fix:last-child .line{display:none;}
+.track.is-plotted .line{transform:scale(1);}
+.track.is-plotted .fix:nth-child(2) .line{transition-delay:.3s;}
+.track.is-plotted .fix:nth-child(3) .line{transition-delay:.6s;}
+.track.is-plotted .fix:nth-child(4) .line{transition-delay:.9s;}
+.fix .mark{
+  position:absolute;left:0;top:12px;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--bio);display:grid;place-items:center;background:var(--abyss);
+  opacity:0;transform:scale(.4);transition:opacity .5s var(--ease),transform .5s var(--ease);
+}
+@media(min-width:900px){.fix .mark{left:11px;top:9px;}}
+.fix .mark::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--bio);box-shadow:0 0 14px var(--bio);}
+.track.is-plotted .mark{opacity:1;transform:scale(1);}
+.track.is-plotted .fix:nth-child(2) .mark{transition-delay:.3s;}
+.track.is-plotted .fix:nth-child(3) .mark{transition-delay:.6s;}
+.track.is-plotted .fix:nth-child(4) .mark{transition-delay:.9s;}
+.track.is-plotted .fix:nth-child(5) .mark{transition-delay:1.2s;}
+.leg{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:10px;}
+.fix h3{font-size:19px;}
+.fix p{font-size:15px;color:var(--fog);margin:0;}
+
+.honest{max-width:760px;}
+.honest .quote{font-family:var(--serif);font-style:italic;font-size:clamp(26px,3.4vw,42px);line-height:1.2;color:var(--ice);margin:0 0 26px;}
+
+.form-grid{display:grid;grid-template-columns:1fr;gap:48px;}
+@media(min-width:960px){.form-grid{grid-template-columns:.85fr 1.15fr;gap:72px;}}
+.formwrap{padding:34px;}
+@media(max-width:520px){.formwrap{padding:24px;}}
+.field{margin-bottom:18px;position:relative;}
+.field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:8px;}
+.field input,.field select,.field textarea{
+  width:100%;padding:14px 16px;border-radius:12px;
+  font-family:var(--body);font-size:16px;color:var(--ice);
+  background:rgba(255,255,255,.05);border:1px solid var(--edge);
+  transition:border-color .3s,box-shadow .3s,background .3s;
+}
+.field input::placeholder,.field textarea::placeholder{color:#5D7885;}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--bio);background:rgba(255,255,255,.075);
+  box-shadow:0 0 0 4px rgba(61,255,192,.12);
+}
+.field select{appearance:none;-webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--fog) 50%),linear-gradient(135deg,var(--fog) 50%,transparent 50%);
+  background-position:calc(100% - 21px) 24px,calc(100% - 16px) 24px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+.field select option{background:var(--deep);color:var(--ice);}
+.field textarea{min-height:118px;resize:vertical;}
+.field-row{display:grid;grid-template-columns:1fr;gap:0 18px;}
+@media(min-width:560px){.field-row{grid-template-columns:1fr 1fr;}}
+.formnote{font-size:13px;color:var(--fog);margin-top:16px;}
+.contact-line{display:block;font-family:var(--mono);font-size:15px;letter-spacing:.02em;color:var(--bio);text-decoration:none;margin-top:6px;transition:color .3s;}
+.contact-line:hover{color:var(--ice);}
+.thanks{display:none;padding:34px;}
+.thanks.is-visible{display:block;}
+form.is-sent{display:none;}
+
+.dock{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,150%);z-index:950;
+  display:flex;align-items:center;gap:18px;padding:11px 11px 11px 24px;border-radius:100px;
+  background:rgba(10,30,43,.82);backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid var(--edge-lit);box-shadow:0 20px 60px -14px rgba(0,0,0,.75);
+  transition:transform .55s var(--ease);width:calc(100% - 32px);max-width:520px;justify-content:space-between;
+}
+.dock.is-up{transform:translate(-50%,0);}
+.dock p{margin:0;font-size:14px;color:var(--fog);}
+.dock b{color:var(--ice);font-weight:600;}
+@media(max-width:560px){.dock p{display:none;}.dock{justify-content:center;padding:11px;}}
+
+.footer{
+  padding:44px var(--gutter) 120px;border-top:1px solid var(--edge);
+  display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);
+}
+.footer a{color:var(--bio);text-decoration:none;}
+.footer a:hover{color:var(--ice);}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<nav class="nav" id="nav">
+  <a class="wordmark" href="/">Mitchel Turner <em>Dev</em></a>
+  <div class="nav-right">
+    <span class="nav-loc">55°20′N 131°38′W · Ketchikan, AK</span>
+    <a class="btn btn--primary btn--sm" href="#start"><span>Get a quote</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="radar" aria-hidden="true"><div class="rings"></div><div class="sweep"></div></div>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow"><span class="dot"></span> Web design · Ketchikan &amp; statewide</p>
+      <h1>
+        <span class="reveal-line"><span>Websites for</span></span>
+        <span class="reveal-line"><span>Alaska business,</span></span>
+        <span class="reveal-line"><span>built <em class="serif grad">here.</em></span></span>
+      </h1>
+      <p class="lede">Custom sites for charter operators, marinas, lodges, contractors, and shops — designed and coded by one developer you can actually reach. No agency layers. No offshore handoff. No template with your logo dropped in.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn--primary" href="#start"><span>Start a project →</span></a>
+        <a class="btn btn--ghost" href="#work"><span>See recent work</span></a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><div class="n" data-count="48">0</div><div class="l">Hours to your quote</div></div>
+        <div class="stat"><div class="n"><span data-count="4">0</span>–<span data-count="6">0</span></div><div class="l">Weeks to launch</div></div>
+        <div class="stat"><div class="n" data-count="1">0</div><div class="l">People between you &amp; the code</div></div>
+      </div>
+    </div>
+
+    <aside class="glass spec" data-reveal>
+      <dl>
+        <dt>Based</dt>
+        <dd>Ketchikan, AK<small>Alaska time, Alaska context</small></dd>
+        <dt>Quote returned</dt>
+        <dd>Within 48 hours</dd>
+        <dt>Typical build</dt>
+        <dd>4–6 weeks</dd>
+        <dt>Who you talk to</dt>
+        <dd>The developer<small>That's the whole team</small></dd>
+      </dl>
+    </aside>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mtrack">
+    <span>Charter operators</span><span>Marinas &amp; harbors</span><span>Lodges &amp; outfitters</span><span>Contractors</span><span>Retail &amp; food service</span><span>Tribal &amp; municipal</span><span>Processors</span><span>Air taxis</span>
+    <span>Charter operators</span><span>Marinas &amp; harbors</span><span>Lodges &amp; outfitters</span><span>Contractors</span><span>Retail &amp; food service</span><span>Tribal &amp; municipal</span><span>Processors</span><span>Air taxis</span>
+  </div>
+</div>
+
+<section class="band">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Every build includes</p>
+    <h2 data-reveal>Fast, findable, and <span class="serif grad">yours</span>.</h2>
+    <p class="lede" data-reveal>The parts that usually cost extra somewhere else are standard here.</p>
+
+    <div class="bento">
+      <article class="cell cell--a" data-tilt data-reveal>
+        <span class="idx">01</span>
+        <h3>Custom design, never a template.</h3>
+        <p>Built around your business and your customers. If the site could belong to a shop in Ohio with the logo swapped out, it isn't finished.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">02</span><h3>Fast on rural bandwidth</h3>
+        <p>Tuned for the connection your customers actually have, not office fiber.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">03</span><h3>Phone-first, genuinely</h3>
+        <p>Most visitors are on a phone. That layout gets designed first, not squeezed down after.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">04</span><h3>Search, wired up</h3>
+        <p>Titles, structured data, sitemap, Google Business Profile, analytics — live at launch.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">05</span><h3>Bookings &amp; payments</h3>
+        <p>Take reservations, deposits, or quotes on the site. Stripe when you need it.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">06</span><h3>You own all of it</h3>
+        <p>Domain, hosting, code, content. No builder holding your site hostage.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band band--edge" id="work">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Recent work</p>
+    <h2 data-reveal>Shipped, live, and <span class="serif grad">holding up</span>.</h2>
+
+    <div class="work">
+      <article class="wcard" data-tilt data-reveal>
+        <span class="tag">National client</span>
+        <h3>Threshold Services</h3>
+        <p>Full multi-page marketing site plus a complete logo and brand asset library for a national field services company in the smart-home and distributed-energy space.</p>
+      </article>
+      <article class="wcard" data-tilt data-reveal>
+        <span class="tag">Live public data</span>
+        <h3>ktnport.com</h3>
+        <p>Cruise ship passenger traffic for downtown Ketchikan, updating live — built to stay fast and readable on a phone in the rain on Front Street.</p>
+      </article>
+      <article class="wcard" data-tilt data-reveal>
+        <span class="tag">Local business</span>
+        <h3>Knudson Cove Marina</h3>
+        <p>Redesign for a working Ketchikan marina, restructured around what boaters and visitors actually arrive looking for.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band band--edge">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> How it runs · five legs</p>
+    <h2 data-reveal>Plotted before we get <span class="serif grad">underway</span>.</h2>
+    <p class="lede" data-reveal>You'll know the scope, the price, and the launch date before a single line of code is written.</p>
+
+    <div class="track" id="track">
+      <ol>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 01 · 30 min</span><h3>Call</h3>
+          <p>What the business does, who you're after, and what the current site isn't doing.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 02 · 48 hrs</span><h3>Written quote</h3>
+          <p>Fixed price, page-by-page scope, launch date. In writing, so nothing drifts.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 03 · 1–2 wks</span><h3>Design</h3>
+          <p>Real layouts with your real content. You review, we adjust, we lock it.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 04 · 2–4 wks</span><h3>Build</h3>
+          <p>Coded, tested on real devices, staged on a private link you can share with your team.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Leg 05 · launch day</span><h3>Handover</h3>
+          <p>Live, indexed, analytics running, and a walkthrough so you can update it yourself.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="band band--edge">
+  <div class="inner honest">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Straight answer</p>
+    <p class="quote" data-reveal>Website builders are cheaper. Sometimes they're also the right call.</p>
+    <p class="lede" data-reveal>If you need four pages and a contact form, Squarespace will do it and you should keep your money. Call me when the site has to <em>do</em> something — take bookings, sync a schedule, handle deposits, show live data, rank for the searches that bring you work, or hold up under a full season's traffic. That's the line where custom starts paying for itself.</p>
+    <p class="lede" data-reveal style="color:var(--ice);margin-top:22px;">Not sure which side of that line you're on? Ask. I'll tell you honestly, and I'll say so if you don't need me.</p>
+  </div>
+</section>
+
+<section class="band band--edge" id="start">
+  <div class="inner">
+    <div class="form-grid">
+      <div>
+        <p class="eyebrow" data-reveal><span class="dot"></span> Start a project</p>
+        <h2 data-reveal>Tell me what you <span class="serif grad">need</span>.</h2>
+        <p class="lede" data-reveal>A real reply from me within one business day — not an automated sequence. If it's a fit, the written quote follows inside 48 hours.</p>
+        <div data-reveal style="margin-top:34px;">
+          <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
+          <a class="contact-line" href="tel:+19075550100" data-track="call">(907) 555-0100</a>
+          <a class="contact-line" href="mailto:hello@mitchelturner.dev" data-track="email">hello@mitchelturner.dev</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="glass formwrap" data-reveal>
+          <form id="lead-form" novalidate>
+            <div class="field-row">
+              <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
+              <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" autocomplete="organization" required></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+              <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="town">Town</label><input id="town" name="town" type="text" placeholder="Ketchikan, Juneau, Sitka…"></div>
+              <div class="field"><label for="timeline">Timeline</label>
+                <select id="timeline" name="timeline">
+                  <option>As soon as possible</option><option>Next 1–3 months</option>
+                  <option>Before next season</option><option>Still planning</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label for="details">What do you need the site to do?</label>
+              <textarea id="details" name="details" placeholder="New site, redesign, online booking, taking deposits, not showing up in search — whatever's on your mind."></textarea>
+            </div>
+            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Send project details →</span></button>
+            <p class="formnote">No newsletter, no drip sequence. Your details go to one inbox — mine.</p>
+          </form>
+
+          <div class="thanks" id="thanks" role="status">
+            <h3 style="font-size:28px;">Sent.</h3>
+            <p style="color:var(--fog);margin:0;">I've got it. You'll hear back within one business day, from an actual Ketchikan phone number or my own email address.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>Mitchel Turner Dev, LLC · Ketchikan, Alaska</span>
+  <span><a href="/custom-software">Custom software</a> · <a href="/">Home</a></span>
+</footer>
+
+<div class="dock" id="dock">
+  <p><b>Free quote</b> back within 48 hours.</p>
+  <a class="btn btn--primary btn--sm" href="#start"><span>Start a project</span></a>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  requestAnimationFrame(function(){ document.body.classList.add('loaded'); });
+
+  var bar=document.getElementById('progress'), nav=document.getElementById('nav'), dock=document.getElementById('dock');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-innerHeight;
+    bar.style.width=(h>0?(scrollY/h)*100:0)+'%';
+    nav.classList.toggle('is-stuck', scrollY>40);
+    dock.classList.toggle('is-up', scrollY>innerHeight*0.85 && scrollY<h-560);
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  if('IntersectionObserver' in window && !reduce){
+    var ro=new IntersectionObserver(function(es){
+      es.forEach(function(e,i){ if(e.isIntersecting){ e.target.style.transitionDelay=(i*70)+'ms'; e.target.classList.add('in'); ro.unobserve(e.target);} });
+    },{threshold:.15,rootMargin:'0px 0px -60px'});
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ro.observe(el);});
+  } else { document.querySelectorAll('[data-reveal]').forEach(function(el){el.classList.add('in');}); }
+
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    document.querySelectorAll('[data-tilt]').forEach(function(c){
+      c.addEventListener('mousemove',function(e){
+        var r=c.getBoundingClientRect();
+        c.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        c.style.setProperty('--my',(e.clientY-r.top)+'px');
+      });
+    });
+  }
+
+  var counted=false;
+  function count(){
+    if(counted) return; counted=true;
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var t=+el.dataset.count, s=performance.now(), d=1100;
+      if(reduce){ el.textContent=t; return; }
+      requestAnimationFrame(function step(now){
+        var p=Math.min((now-s)/d,1), e=1-Math.pow(1-p,3);
+        el.textContent=Math.round(t*e);
+        if(p<1) requestAnimationFrame(step);
+      });
+    });
+  }
+  var stats=document.querySelector('.hero-stats');
+  if(stats && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){count();o.disconnect();}});},{threshold:.4}).observe(stats);
+  } else count();
+
+  var track=document.getElementById('track');
+  if(track){
+    if(reduce||!('IntersectionObserver' in window)) track.classList.add('is-plotted');
+    else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
+  }
+
+  /* ── Lead form ──────────────────────────────────────────
+     Point fetch() at your endpoint; swap send_to for the real
+     conversion labels from the Google Ads UI.
+     ────────────────────────────────────────────────────── */
+  var form=document.getElementById('lead-form'), thanks=document.getElementById('thanks');
+  if(form){
+    form.addEventListener('submit',function(ev){
+      ev.preventDefault();
+      if(!form.checkValidity()){form.reportValidity();return;}
+      var payload=Object.fromEntries(new FormData(form).entries());
+      payload.source='web-design-landing';
+
+      // fetch('/api/leads',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+
+      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/XXXXXXXXXXXXXXX'});
+      form.classList.add('is-sent'); thanks.classList.add('is-visible');
+      thanks.scrollIntoView({block:'center'});
+    });
+  }
+  document.querySelectorAll('[data-track]').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function') gtag('event','conversion',{'send_to':'AW-XXXXXXXXX/'+(el.dataset.track==='call'?'CALL_LABEL':'EMAIL_LABEL')});
+    });
+  });
+})();
+</script>
+</body>
+</html>

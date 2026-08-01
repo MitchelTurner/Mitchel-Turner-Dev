@@ -353,7 +353,7 @@ form.is-sent{display:none;}
   <a class="wordmark" href="/">Mitchel Turner <em>Dev</em></a>
   <div class="nav-right">
     <span class="nav-loc">55°20′N 131°38′W · Ketchikan, AK</span>
-    <a class="btn btn--primary btn--sm" href="#start"><span>Book a call</span></a>
+    <a class="btn btn--primary btn--sm" href="#start" data-cta="nav"><span>Book a call</span></a>
   </div>
 </nav>
 
@@ -374,7 +374,7 @@ form.is-sent{display:none;}
       <p class="lede">Custom web apps, dashboards, billing flows, and integrations for Alaska operators — scoped at a fixed price and built by the person you talk to. When the spreadsheet, the whiteboard, and three separate subscriptions stop holding it together, this is what comes next.</p>
 
       <div class="hero-actions">
-        <a class="btn btn--primary" href="#start"><span>Book a scoping call →</span></a>
+        <a class="btn btn--primary" href="#start" data-cta="hero"><span>Book a scoping call →</span></a>
         <a class="btn btn--ghost" href="#build"><span>What I build</span></a>
       </div>
 
@@ -581,7 +581,7 @@ form.is-sent{display:none;}
 
 <div class="dock" id="dock">
   <p><b>Free 45-minute call.</b> You keep the write-up.</p>
-  <a class="btn btn--primary btn--sm" href="#start"><span>Book it</span></a>
+  <a class="btn btn--primary btn--sm" href="#start" data-cta="dock"><span>Book it</span></a>
 </div>
 
 <script>
@@ -639,12 +639,26 @@ form.is-sent{display:none;}
     else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
   }
 
-  /* ── Lead form → /api/contact → /thank-you ──────────────
-     Conversion tag fires on the thank-you destination page.
-     ────────────────────────────────────────────────────── */
-  var ADS_ID='AW-18361474386';
+  /* ── Analytics: cta_click, form_start, lead submit ────── */
+  var LANDING='custom-software';
+  document.querySelectorAll('[data-cta]').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        gtag('event','cta_click',{cta_location:el.dataset.cta,landing_page:LANDING});
+      }
+    });
+  });
+
   var form=document.getElementById('lead-form');
+  var formStarted=false;
   if(form){
+    form.addEventListener('focusin',function(){
+      if(formStarted) return;
+      formStarted=true;
+      if(typeof gtag==='function'){
+        gtag('event','form_start',{form_id:'lead-form',landing_page:LANDING});
+      }
+    });
     form.addEventListener('submit',async function(ev){
       ev.preventDefault();
       if(!form.checkValidity()){form.reportValidity();return;}

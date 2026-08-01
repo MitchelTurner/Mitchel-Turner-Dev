@@ -33,3 +33,27 @@ export function trackGenerateLead(source?: string): void {
     currency: "USD",
   });
 }
+
+/** Primary CTA clicks (nav, hero, dock, about, etc.). */
+export function trackCtaClick(
+  ctaLocation: string,
+  landingPage?: string,
+): void {
+  trackEvent("cta_click", {
+    cta_location: ctaLocation,
+    ...(landingPage ? { landing_page: landingPage } : { landing_page: "site" }),
+  });
+}
+
+/** First interaction with a lead/contact form (once per page load). */
+export function trackFormStart(formId: string, landingPage?: string): void {
+  trackEvent("form_start", {
+    form_id: formId,
+    ...(landingPage ? { landing_page: landingPage } : { landing_page: "site" }),
+  });
+}
+
+/** Portfolio "View demo" outbound clicks. */
+export function trackViewDemo(repoName: string): void {
+  trackEvent("view_demo", { repo_name: repoName });
+}

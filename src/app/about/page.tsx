@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 
 export const metadata: Metadata = {
   title: "About — Mitchel Turner",
@@ -149,15 +149,16 @@ export default function AboutPage() {
           .
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link
+          <TrackedCtaLink
             href="/contact"
+            ctaLocation="about"
             className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 via-cyan-400 to-teal-300 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition hover:shadow-cyan-500/40"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 4h16v12H5.2L4 17.2z" />
             </svg>
             Get in touch
-          </Link>
+          </TrackedCtaLink>
           <a
             href="https://github.com/MitchelTurner"
             target="_blank"

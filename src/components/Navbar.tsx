@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 
 const links = [
   { href: "/", label: "Work" },
@@ -51,9 +52,13 @@ export function Navbar() {
             );
           })}
         </div>
-        <Link href="/contact" className="site-btn site-btn--primary site-btn--sm">
+        <TrackedCtaLink
+          href="/contact"
+          ctaLocation="nav"
+          className="site-btn site-btn--primary site-btn--sm"
+        >
           <span>Get a quote</span>
-        </Link>
+        </TrackedCtaLink>
       </div>
     </nav>
   );

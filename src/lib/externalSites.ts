@@ -13,8 +13,11 @@ export type ExternalSite = {
   name: string;
   /** One or two sentences describing what it is. */
   description: string;
-  /** Public URL of the live site. */
-  url: string;
+  /**
+   * Public URL of the live site. Omit (or leave empty) for projects that are
+   * not launched yet — the card stays visible without Visit/Live links.
+   */
+  url?: string;
   /** Optional short label, e.g. "Client project" or "Freelance". */
   role?: string;
   /** Optional tech / topic tags shown as chips. */
@@ -34,7 +37,6 @@ export const EXTERNAL_SITES: ExternalSite[] = [
     name: "Port of Ketchikan",
     description:
       "Online boat moorage and harbor registration for the City of Ketchikan's Port & Harbors. Boaters register a vessel and pay moorage across Ketchikan's small-boat harbors online — no trip to the harbor office required.",
-    url: "https://ktnport.com/",
     role: "Client project",
     tags: ["Web app", "Online payments", "Municipal"],
     year: "2026",

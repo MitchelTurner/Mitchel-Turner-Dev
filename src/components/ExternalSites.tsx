@@ -11,29 +11,31 @@ function hostname(url: string): string {
 }
 
 function ExternalSiteCard({ site }: { site: ExternalSite }) {
-  const host = hostname(site.url);
+  const live = Boolean(site.url?.trim());
+  const host = live && site.url ? hostname(site.url) : null;
   const coverSrc = site.image ?? ogSiteImageUrl(site);
 
-  return (
-    <a
-      href={site.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex flex-col overflow-hidden rounded-2xl glass transition hover:border-white/20 hover:shadow-2xl hover:shadow-cyan-500/10"
-    >
+  const body = (
+    <>
       <div className="relative aspect-[1200/630] w-full overflow-hidden bg-black/40">
         <Image
           src={coverSrc}
           alt={`${site.name} graphic`}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+          className={`object-cover transition duration-500${live ? " group-hover:scale-[1.03]" : ""}`}
           unoptimized
         />
-        <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-medium text-emerald-300 ring-1 ring-emerald-400/30 backdrop-blur">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          Live
-        </span>
+        {live ? (
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-medium text-emerald-300 ring-1 ring-emerald-400/30 backdrop-blur">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Live
+          </span>
+        ) : (
+          <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-medium text-white/70 ring-1 ring-white/20 backdrop-blur">
+            Coming soon
+          </span>
+        )}
         {site.year && (
           <span className="absolute left-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white/70 ring-1 ring-white/15 backdrop-blur">
             {site.year}
@@ -70,23 +72,48 @@ function ExternalSiteCard({ site }: { site: ExternalSite }) {
         )}
 
         <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-3 text-sm">
-          <span className="truncate text-white/50">{host}</span>
-          <span className="inline-flex items-center gap-1.5 font-medium text-cyan-300">
-            Visit site
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <path d="M7 17 17 7M9 7h8v8" />
-            </svg>
-          </span>
+          {live && host ? (
+            <>
+              <span className="truncate text-white/50">{host}</span>
+              <span className="inline-flex items-center gap-1.5 font-medium text-cyan-300">
+                Visit site
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <path d="M7 17 17 7M9 7h8v8" />
+                </svg>
+              </span>
+            </>
+          ) : (
+            <span className="text-white/40">Not launched yet</span>
+          )}
         </div>
       </div>
-    </a>
+    </>
+  );
+
+  if (live && site.url) {
+    return (
+      <a
+        href={site.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="group flex flex-col overflow-hidden rounded-2xl glass transition hover:border-white/20 hover:shadow-2xl hover:shadow-cyan-500/10"
+      >
+        {body}
+      </a>
+    );
+  }
+
+  return (
+    <div className="flex flex-col overflow-hidden rounded-2xl glass">
+      {body}
+    </div>
   );
 }
 
@@ -110,7 +137,7 @@ export function ExternalSites() {
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {EXTERNAL_SITES.map((site) => (
-          <ExternalSiteCard key={site.url} site={site} />
+          <ExternalSiteCard key={site.name} site={site} />
         ))}
       </div>
     </section>

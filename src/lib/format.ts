@@ -49,21 +49,23 @@ export function ogImageUrl(repo: {
 export function ogSiteImageUrl(site: {
   name: string;
   description: string;
-  url: string;
+  url?: string;
   role?: string;
   tags?: string[];
   year?: string;
 }): string {
   let host = "";
-  try {
-    host = new URL(site.url).hostname.replace(/^www\./, "");
-  } catch {
-    host = site.url;
+  if (site.url) {
+    try {
+      host = new URL(site.url).hostname.replace(/^www\./, "");
+    } catch {
+      host = site.url;
+    }
   }
   const params = new URLSearchParams({
     name: site.name,
     desc: site.description,
-    role: site.role ?? "Live site",
+    role: site.role ?? (site.url ? "Live site" : "Coming soon"),
     year: site.year ?? "",
     host,
     tags: (site.tags ?? []).slice(0, 4).join(","),

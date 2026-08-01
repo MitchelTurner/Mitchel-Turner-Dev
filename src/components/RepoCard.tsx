@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { languageColor, type PortfolioRepo } from "@/lib/github";
+import { languageColor, type PortfolioRepo } from "@/lib/github-meta";
 import { ogImageUrl, timeAgo } from "@/lib/format";
 import { resolveLiveUrl } from "@/lib/liveUrls";
 import { trackViewDemo } from "@/lib/analytics";

@@ -5,6 +5,7 @@
  * SQLite connection handles. In production each serverless invocation gets
  * a fresh instance — keep queries lightweight.
  */
+import "server-only";
 import { PrismaClient } from "@prisma/client";
 
 // Reuse a single PrismaClient instance across hot reloads in development to

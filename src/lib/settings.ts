@@ -6,8 +6,8 @@
  *   2. `GITHUB_USERNAME` environment variable
  *   3. `github.config.json` in the project root (committed, serverless-safe)
  */
-import { readFileSync } from "fs";
-import { join } from "path";
+import "server-only";
+import githubConfig from "../../github.config.json";
 import { prisma } from "./prisma";
 
 export const GITHUB_USERNAME_KEY = "github_username";
@@ -20,12 +20,9 @@ function normalizeUsername(value: string): string {
 
 function readConfigUsername(): string | null {
   try {
-    const raw = readFileSync(
-      join(process.cwd(), "github.config.json"),
-      "utf8",
-    );
-    const data = JSON.parse(raw) as { username?: string };
-    const username = data.username ? normalizeUsername(data.username) : "";
+    const username = githubConfig.username
+      ? normalizeUsername(githubConfig.username)
+      : "";
     return username || null;
   } catch {
     return null;

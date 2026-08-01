@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent, trackGenerateLead } from "@/lib/analytics";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -37,6 +38,7 @@ export function ContactForm({ email }: { email: string }) {
       };
 
       if (res.ok && data.ok) {
+        trackGenerateLead("contact-form");
         setStatus("success");
         setName("");
         setFrom("");
@@ -175,6 +177,7 @@ export function ContactForm({ email }: { email: string }) {
         </button>
         <a
           href={`mailto:${email}`}
+          onClick={() => trackEvent("contact", { method: "email" })}
           className="text-sm text-white/50 transition hover:text-white/80"
         >
           or email {email}

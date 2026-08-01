@@ -5,12 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Custom Software for Alaska Businesses — Mitchel Turner Dev, Ketchikan AK</title>
 <meta name="description" content="Custom web apps, dashboards, and integrations built for Alaska operators. Ketchikan-based developer, fixed-price scope, direct access. Free scoping call.">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18361474386"></script>
+<!-- Google tag (gtag.js) — Analytics + Ads -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YRDJ09G5DK"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+  gtag('config', 'G-YRDJ09G5DK');
   gtag('config', 'AW-18361474386');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -686,7 +687,7 @@ form.is-sent{display:none;}
     el.addEventListener('click',function(){
       if(typeof gtag==='function'){
         var method=el.dataset.track==='call'?'phone':'email';
-        gtag('event','contact',{send_to:ADS_ID,method:method});
+        gtag('event','contact',{method:method});
       }
     });
   });

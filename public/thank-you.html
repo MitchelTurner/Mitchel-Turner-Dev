@@ -6,20 +6,20 @@
 <title>Message sent — Mitchel Turner Dev</title>
 <meta name="description" content="Thanks for reaching out. You'll hear back within one business day.">
 <meta name="robots" content="noindex, nofollow">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18361474386"></script>
+<!-- Google tag (gtag.js) — Analytics + Ads -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YRDJ09G5DK"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+  gtag('config', 'G-YRDJ09G5DK');
   gtag('config', 'AW-18361474386');
-  /* Destination conversion page — fire on load for Google Ads */
-  gtag('event', 'conversion', {
-    send_to: 'AW-18361474386',
+  /* Destination conversion — GA4 generate_lead + Ads conversion */
+  gtag('event', 'generate_lead', {
     value: 1.0,
     currency: 'USD'
   });
-  gtag('event', 'generate_lead', {
+  gtag('event', 'conversion', {
     send_to: 'AW-18361474386',
     value: 1.0,
     currency: 'USD'
@@ -194,7 +194,6 @@ h1{
   }
   if(typeof gtag==='function' && from){
     gtag('event','page_view',{
-      send_to:'AW-18361474386',
       page_title:'Thank you — '+from,
       page_path:'/thank-you',
       landing_source:from

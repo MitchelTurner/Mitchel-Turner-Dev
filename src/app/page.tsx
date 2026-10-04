@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { LiveWorkPortfolio } from "@/components/LiveWorkPortfolio";
+import { isAuthenticated } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -15,5 +16,8 @@ export default async function Home({
   searchParams: Promise<{ fresh?: string }>;
 }) {
   const params = await searchParams;
-  return <LiveWorkPortfolio fresh={params.fresh === "1"} />;
+  // Public ?fresh=1 links stay as a retry, but only an admin session may
+  // bypass the GitHub cache. Otherwise anyone can burn the API rate limit.
+  const fresh = params.fresh === "1" && (await isAuthenticated());
+  return <LiveWorkPortfolio fresh={fresh} />;
 }

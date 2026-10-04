@@ -7,7 +7,7 @@
  */
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
-import { languageColor } from "@/lib/github";
+import { languageColor } from "@/lib/languages";
 
 export const runtime = "nodejs";
 

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { clientAddress, rateLimit } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -23,10 +24,21 @@ export async function POST(
       ? ((body as Record<string, unknown>).voterKey as string).trim()
       : "";
 
-  if (!voterKey) {
+  if (!/^[A-Za-z0-9_-]{8,80}$/.test(voterKey)) {
     return NextResponse.json(
       { error: "A voterKey is required." },
       { status: 400 },
+    );
+  }
+
+  const ip = clientAddress(req.headers);
+  if (
+    rateLimit(`vote:${ip}`, 20, 60_000) ||
+    rateLimit("vote:global", 60, 60_000)
+  ) {
+    return NextResponse.json(
+      { error: "Too many votes. Please try again shortly." },
+      { status: 429 },
     );
   }
 

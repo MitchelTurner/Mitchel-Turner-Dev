@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_COOKIE, adminToken, verifyPassword } from "@/lib/auth";
+import { clientAddress, rateLimit } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,18 @@ export async function POST(req: NextRequest) {
     typeof (body as Record<string, unknown>)?.password === "string"
       ? ((body as Record<string, unknown>).password as string)
       : "";
+
+  const ip = clientAddress(req.headers);
+  const windowMs = 15 * 60_000;
+  if (
+    rateLimit(`admin-login:${ip}`, 8, windowMs) ||
+    rateLimit("admin-login:global", 30, windowMs)
+  ) {
+    return NextResponse.json(
+      { error: "Too many attempts. Try again in a few minutes." },
+      { status: 429 },
+    );
+  }
 
   if (!verifyPassword(password)) {
     return NextResponse.json(

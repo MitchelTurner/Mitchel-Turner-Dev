@@ -19,7 +19,9 @@ export async function GET(req: NextRequest) {
     Number.isFinite(limitParam) && limitParam > 0
       ? Math.min(Math.floor(limitParam), 30)
       : 12;
-  const fresh = searchParams.get("fresh") === "1";
+  // Uncached fetches hit GitHub on every request. Keep that to admin sessions.
+  const fresh =
+    searchParams.get("fresh") === "1" && (await isAuthenticated());
 
   const result = await fetchPortfolioRepos(limit, { fresh });
   return NextResponse.json(result);

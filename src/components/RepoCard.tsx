@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { languageColor, type PortfolioRepo } from "@/lib/github";
+import type { PortfolioRepo } from "@/lib/github";
+import { languageColor } from "@/lib/languages";
 import { ogImageUrl, timeAgo } from "@/lib/format";
 import { resolveLiveUrl } from "@/lib/liveUrls";
 import { TrackedRepoLink } from "@/components/TrackedRepoLink";

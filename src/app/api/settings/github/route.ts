@@ -18,7 +18,10 @@ export const dynamic = "force-dynamic";
 
 // GET — resolved GitHub username and where it came from.
 export async function GET() {
-  const resolved = await resolveGithubUsernameWithSource();
+  const [resolved, authed] = await Promise.all([
+    resolveGithubUsernameWithSource(),
+    isAuthenticated(),
+  ]);
 
   let dbValue: string | null = null;
   try {
@@ -33,7 +36,7 @@ export async function GET() {
   return NextResponse.json({
     username: resolved.username ?? "",
     activeSource: resolved.source,
-    hasToken: !!process.env.GITHUB_TOKEN?.trim(),
+    hasToken: authed && !!process.env.GITHUB_TOKEN?.trim(),
     persistedInDatabase: !!dbValue,
     databaseUsername: dbValue ?? "",
     configFile: "github.config.json",

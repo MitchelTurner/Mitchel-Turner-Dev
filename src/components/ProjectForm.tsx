@@ -190,7 +190,7 @@ export function ProjectForm({ onCreated }: { onCreated: (p: ProjectDTO) => void 
             <input
               ref={fileRef}
               type="file"
-              accept="image/*"
+              accept="image/png,image/jpeg,image/webp,image/gif"
               className="hidden"
               onChange={(e) => {
                 const f = e.target.files?.[0];

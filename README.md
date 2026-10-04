@@ -106,15 +106,15 @@ flowchart TB
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+ (the app also runs on Node 20; `npm test` needs Node’s TypeScript stripper)
 - npm 10+
 
 ### Setup
 
 ```bash
 # Clone and install
-git clone https://github.com/MitchelTurner/FlagShip.git
-cd FlagShip
+git clone https://github.com/MitchelTurner/Mitchel-Turner-Dev.git
+cd Mitchel-Turner-Dev
 npm install
 
 # Environment
@@ -203,6 +203,7 @@ Committed fallback when env/DB are unavailable (ideal for serverless):
 | `npm run build` | Prisma generate + production build |
 | `npm run start` | Run production build |
 | `npm run lint` | ESLint |
+| `npm test` | Unit tests for URL, rate-limit, and language-bar helpers |
 | `npm run db:migrate` | Apply Prisma migrations |
 | `npm run db:seed` | Seed sample projects |
 | `npm run db:reset` | Reset DB and re-seed |

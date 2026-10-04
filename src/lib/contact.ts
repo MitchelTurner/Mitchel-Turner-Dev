@@ -23,6 +23,11 @@ export function isContactConfigured(): boolean {
   return Boolean(process.env.RESEND_API_KEY?.trim());
 }
 
+/** Collapse control characters so a name cannot break the email subject line. */
+function oneLine(value: string): string {
+  return value.replace(/[\u0000-\u001F\u007F]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
 export interface ContactMessage {
   name: string;
   email: string;
@@ -40,16 +45,14 @@ export async function sendContactEmail(
   if (!apiKey) return { ok: false, reason: "not_configured" };
 
   const resend = new Resend(apiKey);
+  const name = oneLine(msg.name);
+  const email = oneLine(msg.email);
   const sourceMatch = msg.message.match(/^Source:\s*(.+)$/m);
-  const subject = sourceMatch
-    ? `Landing lead (${sourceMatch[1].trim()}) from ${msg.name}`
-    : `Portfolio contact from ${msg.name}`;
-  const text = [
-    `Name: ${msg.name}`,
-    `Email: ${msg.email}`,
-    "",
-    msg.message,
-  ].join("\n");
+  const source = sourceMatch ? oneLine(sourceMatch[1]) : "";
+  const subject = source
+    ? `Landing lead (${source}) from ${name}`
+    : `Portfolio contact from ${name}`;
+  const text = [`Name: ${name}`, `Email: ${email}`, "", msg.message].join("\n");
 
   try {
     const { error } = await resend.emails.send({

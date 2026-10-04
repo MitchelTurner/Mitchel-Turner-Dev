@@ -10,8 +10,21 @@ import { cookies } from "next/headers";
 
 export const ADMIN_COOKIE = "admin_session";
 
+let warnedAboutDefaultPassword = false;
+
 function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD ?? "changeme";
+  const configured = process.env.ADMIN_PASSWORD?.trim();
+  if (
+    !warnedAboutDefaultPassword &&
+    process.env.NODE_ENV === "production" &&
+    (!configured || configured === "changeme")
+  ) {
+    warnedAboutDefaultPassword = true;
+    console.warn(
+      "ADMIN_PASSWORD is missing or still the default. Set a strong secret before relying on /admin.",
+    );
+  }
+  return configured || "changeme";
 }
 
 // Derive a deterministic token from the admin password so the raw password is

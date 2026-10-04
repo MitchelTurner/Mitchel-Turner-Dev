@@ -2,9 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAuthenticated } from "@/lib/auth";
 import { serializeProject } from "@/lib/serialize";
+import { safeHttpUrl } from "@/lib/safeUrl";
 import { isValidCategory, isValidStage, parseTags } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+/** null when empty, undefined when the value is present but not a safe URL. */
+function optionalUrl(value: unknown): string | null | undefined {
+  if (typeof value !== "string" || !value.trim()) return null;
+  return safeHttpUrl(value) ?? undefined;
+}
 
 // GET /api/projects?sort=top|new&category=hardware|software&stage=...
 export async function GET(req: NextRequest) {
@@ -84,14 +91,20 @@ export async function POST(req: NextRequest) {
         ? data.tags.map(String).map((t) => t.trim()).filter(Boolean).join(",")
         : "";
 
-  const imageUrl =
-    typeof data.imageUrl === "string" && data.imageUrl.trim()
-      ? data.imageUrl.trim()
-      : null;
-  const demoUrl =
-    typeof data.demoUrl === "string" && data.demoUrl.trim()
-      ? data.demoUrl.trim()
-      : null;
+  const imageUrl = optionalUrl(data.imageUrl);
+  const demoUrl = optionalUrl(data.demoUrl);
+  if (imageUrl === undefined) {
+    return NextResponse.json(
+      { error: "Cover image must be an http(s) URL or an uploaded file path." },
+      { status: 400 },
+    );
+  }
+  if (demoUrl === undefined) {
+    return NextResponse.json(
+      { error: "Demo link must be an http(s) URL or a site path." },
+      { status: 400 },
+    );
+  }
   const featured = data.featured === true;
 
   const project = await prisma.project.create({

@@ -8,6 +8,7 @@
  */
 import { NextRequest, NextResponse } from "next/server";
 import { sendContactEmail } from "@/lib/contact";
+import { clientAddress, rateLimit } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -16,18 +17,7 @@ const EMAIL_MAX = 254;
 const MESSAGE_MAX = 5000;
 const MESSAGE_MIN = 10;
 
-// Best-effort per-IP rate limit (in-memory; resets on cold start).
 const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 5;
-const hits = new Map<string, number[]>();
-
-function rateLimited(ip: string): boolean {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  recent.push(now);
-  hits.set(ip, recent);
-  return recent.length > MAX_PER_WINDOW;
-}
 
 function isEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -38,12 +28,11 @@ function asString(value: unknown): string {
 }
 
 export async function POST(req: NextRequest) {
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ||
-    req.headers.get("x-real-ip") ||
-    "unknown";
-
-  if (rateLimited(ip)) {
+  const ip = clientAddress(req.headers);
+  if (
+    rateLimit(`contact:${ip}`, 5, WINDOW_MS) ||
+    rateLimit("contact:global", 30, WINDOW_MS)
+  ) {
     return NextResponse.json(
       { error: "Too many messages. Please try again shortly.", code: "rate_limited" },
       { status: 429 },

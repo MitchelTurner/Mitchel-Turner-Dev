@@ -9,6 +9,7 @@
  * @see resolveGithubUsername in ./settings.ts for username resolution
  * @see /api/og/repo for per-repo cover graphics
  */
+import { languageShares } from "./languages";
 import { isPublicLiveUrl } from "./liveUrls";
 import { resolveGithubUsername } from "./settings";
 
@@ -101,15 +102,7 @@ async function fetchLanguages(
     });
     if (!res.ok) return [];
     const data = (await res.json()) as Record<string, number>;
-    const total = Object.values(data).reduce((a, b) => a + b, 0);
-    if (!total) return [];
-    return Object.entries(data)
-      .map(([name, bytes]) => ({
-        name,
-        percent: Math.round((bytes / total) * 100),
-      }))
-      .sort((a, b) => b.percent - a.percent)
-      .slice(0, 5);
+    return languageShares(data);
   } catch {
     return [];
   }
@@ -267,33 +260,4 @@ export async function fetchPortfolioRepos(
   return { username, repos, error: null };
 }
 
-// Deterministic brand-ish colors for common languages (used in graphics/badges).
-export const LANGUAGE_COLORS: Record<string, string> = {
-  TypeScript: "#3178c6",
-  JavaScript: "#f1e05a",
-  Python: "#3572A5",
-  Go: "#00ADD8",
-  Rust: "#dea584",
-  Java: "#b07219",
-  "C++": "#f34b7d",
-  C: "#555555",
-  "C#": "#178600",
-  Ruby: "#701516",
-  PHP: "#4F5D95",
-  Swift: "#F05138",
-  Kotlin: "#A97BFF",
-  Dart: "#00B4AB",
-  HTML: "#e34c26",
-  CSS: "#563d7c",
-  Shell: "#89e051",
-  Vue: "#41b883",
-  Svelte: "#ff3e00",
-  Solidity: "#AA6746",
-  Jupyter: "#DA5B0B",
-  "Jupyter Notebook": "#DA5B0B",
-};
-
-export function languageColor(language: string | null | undefined): string {
-  if (!language) return "#8b95a5";
-  return LANGUAGE_COLORS[language] ?? "#8b95a5";
-}
+export { LANGUAGE_COLORS, languageColor } from "./languages";

@@ -45,11 +45,16 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
         </div>
 
         <form onSubmit={submit} className="space-y-4">
+          <label htmlFor="admin-password" className="sr-only">
+            Password
+          </label>
           <input
+            id="admin-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            autoComplete="current-password"
             autoFocus
             className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white placeholder-white/35 outline-none transition focus:border-cyan-400/50"
           />
@@ -66,10 +71,12 @@ export function AdminLogin({ onSuccess }: { onSuccess: () => void }) {
             {loading ? "Checking…" : "Unlock"}
           </button>
         </form>
-        <p className="mt-4 text-center text-xs text-white/35">
-          Default password is <code className="text-white/55">changeme</code> —
-          set <code className="text-white/55">ADMIN_PASSWORD</code> to change it.
-        </p>
+        {process.env.NODE_ENV !== "production" && (
+          <p className="mt-4 text-center text-xs text-white/35">
+            Default password is <code className="text-white/55">changeme</code> —
+            set <code className="text-white/55">ADMIN_PASSWORD</code> to change it.
+          </p>
+        )}
       </div>
     </div>
   );

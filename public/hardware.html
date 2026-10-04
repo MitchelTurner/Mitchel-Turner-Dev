@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hardware Development — Flight Controllers, Firmware &amp; Sensor Networks | Mitchel Turner Dev</title>
-<meta name="description" content="Custom flight controllers, embedded firmware, and sensor networks — board layout through fleet software, from one bench. STM32H7, PX4/ArduPilot, NDAA-compliant sourcing. Ketchikan, Alaska.">
+<meta name="description" content="Custom flight controllers, embedded firmware, and sensor networks. Schematic through fleet software, from one bench in Ketchikan. STM32H7, PX4/ArduPilot, NDAA-compliant parts.">
 <!-- Google tag (gtag.js) — Analytics + Ads -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRDJ09G5DK"></script>
 <script>
@@ -400,7 +400,7 @@ form.is-sent{display:none;}
         <span class="reveal-line"><span>and the software</span></span>
         <span class="reveal-line"><span>that <em class="serif grad">flies</em> them.</span></span>
       </h1>
-      <p class="lede">Custom flight controllers, embedded systems, and sensor networks — schematic, layout, bring-up, firmware, and the backend the data lands in, all from one bench. Built for places where the signal drops and the weather doesn't cooperate, because that's where I test them.</p>
+      <p class="lede">Custom flight controllers, embedded systems, and sensor networks. Schematic, layout, bring-up, firmware, and the software the data lands in, from one bench. I test them where the signal drops and the weather does not wait, because that is where they have to work.</p>
 
       <div class="hero-actions">
         <a class="btn btn--primary" href="#start" data-cta="hero"><span>Start a conversation →</span></a>
@@ -410,7 +410,7 @@ form.is-sent{display:none;}
       <div class="hero-stats">
         <div class="stat"><div class="n">Part <span data-count="107">0</span></div><div class="l">FAA remote pilot certified</div></div>
         <div class="stat"><div class="n" data-count="5">0</div><div class="l">Unit mesh swarm, flying</div></div>
-        <div class="stat"><div class="n" data-count="0">0</div><div class="l">Handoffs board to backend</div></div>
+        <div class="stat"><div class="n" data-count="0">0</div><div class="l">Handoffs, board to backend</div></div>
       </div>
     </div>
 
@@ -423,7 +423,7 @@ form.is-sent{display:none;}
         <dt>Certification</dt>
         <dd>FAA Part 107<small>§107.35 waiver experience</small></dd>
         <dt>Scope</dt>
-        <dd>Board to backend<small>Same person, whole path</small></dd>
+        <dd>Board to backend<small>One person, the whole path</small></dd>
       </dl>
     </aside>
   </div>
@@ -440,34 +440,34 @@ form.is-sent{display:none;}
 <section class="band" id="build">
   <div class="inner">
     <p class="eyebrow" data-reveal><span class="dot"></span> What I build</p>
-    <h2 data-reveal>Silicon, solder, and the <span class="serif grad">stack above it</span>.</h2>
-    <p class="lede" data-reveal>Small-run and prototype work where the electrical, embedded, and application layers all have to agree with each other.</p>
+    <h2 data-reveal>The board, the firmware, and the <span class="serif grad">data</span>.</h2>
+    <p class="lede" data-reveal>Prototype and small-run work, where the circuit, the embedded code, and the application have to agree.</p>
 
     <div class="bento">
       <article class="cell cell--a" data-tilt data-reveal>
         <span class="idx">01</span>
-        <h3>Flight controllers &amp; autopilot hardware.</h3>
-        <p>Custom FC boards on STM32H7, working from the FMUv6 reference lineage, targeting PX4 and ArduPilot. NDAA-compliant sourcing throughout, with the BOM costed across tiers before anything gets routed — so you find out what it costs at schematic, not at fab.</p>
+        <h3>Flight controllers and autopilot hardware.</h3>
+        <p>Custom boards on STM32H7, in the FMUv6 lineage, for PX4 and ArduPilot. Parts are sourced to NDAA rules. The bill of materials is priced at each quantity before the board is routed, so the unit cost shows up at the schematic.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">02</span><h3>Firmware &amp; embedded</h3>
-        <p>Bare metal through RTOS. Drivers, bootloaders, sensor fusion, and the unglamorous power and timing work underneath it.</p>
+        <span class="idx">02</span><h3>Firmware</h3>
+        <p>Bare metal through an RTOS. Drivers, bootloaders, sensor fusion, and the power and timing work underneath.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">03</span><h3>Mesh &amp; telemetry</h3>
-        <p>MAVLink hub-and-spoke fleets with clean addressing, and LoRa mesh for long-range low-power sensor networks off the grid.</p>
+        <span class="idx">03</span><h3>Radios and telemetry</h3>
+        <p>MAVLink fleets with clear addressing, and LoRa mesh for long-range sensors where there is no cell network.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">04</span><h3>Sensor integration</h3>
-        <p>GNSS and RTK, IMU, sonar, environmental. Getting the reading off the device, through the link, and into a database that answers questions.</p>
+        <span class="idx">04</span><h3>Sensors</h3>
+        <p>GNSS and RTK, IMU, sonar, and environmental sensors. The reading leaves the device, crosses the link, and lands in a database you can query.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">05</span><h3>Ground &amp; fleet software</h3>
-        <p>Coordinators, mission planning, telemetry ingest, and the dashboards that make a fleet legible to whoever's responsible for it.</p>
+        <span class="idx">05</span><h3>Ground software</h3>
+        <p>Mission planning, telemetry, and the screens that make a fleet understandable to the person responsible for it.</p>
       </article>
       <article class="cell" data-tilt data-reveal>
-        <span class="idx">06</span><h3>Survey workflows</h3>
-        <p>RTK/PPK aerial survey end to end — flight plan, capture, processing, and a deliverable someone can actually use.</p>
+        <span class="idx">06</span><h3>Survey</h3>
+        <p>RTK and PPK aerial survey from the flight plan through processing, ending in a file someone else can use.</p>
       </article>
     </div>
   </div>
@@ -477,32 +477,32 @@ form.is-sent{display:none;}
 <section class="band band--edge">
   <div class="inner">
     <p class="eyebrow" data-reveal><span class="dot"></span> Why one bench</p>
-    <h2 data-reveal>Most hardware projects die at the <span class="serif grad">handoff</span>.</h2>
-    <p class="lede" data-reveal>Not at the schematic. Not at the layout. At the seam between the people who own each layer — where everyone's piece works and the system doesn't.</p>
+    <h2 data-reveal>Hardware projects stall at the <span class="serif grad">handoff</span>.</h2>
+    <p class="lede" data-reveal>The schematic can be right and the layout can be right. The project still stalls where each layer belongs to a different person, and everyone's piece works while the system does not.</p>
 
     <div class="split">
       <div class="panel panel--bad" data-reveal>
         <span class="plabel">The usual chain</span>
         <ul class="chain">
-          <li>An EE designs the board and ships you gerbers</li>
-          <li>A firmware contractor writes drivers against a datasheet</li>
-          <li>An app developer receives a telemetry format by email</li>
-          <li>Nobody owns the path from sensor to screen</li>
+          <li>An electrical engineer sends you the gerbers and moves on</li>
+          <li>A firmware contractor writes drivers from the datasheet</li>
+          <li>An app developer gets the telemetry format by email</li>
+          <li>The path from sensor to screen has no owner</li>
           <li>It works on the bench and fails in the field</li>
         </ul>
-        <p class="kicker">Every seam is a place for a spec to get lost, and every fix crosses three invoices.</p>
+        <p class="kicker">Every seam is a place for the spec to get lost, and every fix crosses three invoices.</p>
       </div>
 
       <div class="panel panel--good" data-reveal>
         <span class="plabel">This one</span>
         <ul class="chain">
-          <li>Same person picks the MCU and routes the board</li>
-          <li>Same person writes the driver for the part they chose</li>
-          <li>Same person defines the telemetry schema</li>
-          <li>Same person builds the backend it lands in</li>
-          <li>Field failures get diagnosed across all four layers at once</li>
+          <li>One person picks the microcontroller and routes the board</li>
+          <li>That same person writes the driver for the part they chose</li>
+          <li>They define the telemetry format</li>
+          <li>They build the software the data lands in</li>
+          <li>A field failure can be traced across all four layers</li>
         </ul>
-        <p class="kicker">Fewer people is a real constraint on throughput. It's also why the seams don't leak.</p>
+        <p class="kicker">One person is a limit on how much can be in flight at once. It is also why a failure in the field can be traced the same day.</p>
       </div>
     </div>
   </div>
@@ -511,27 +511,27 @@ form.is-sent{display:none;}
 <!-- ═══ PROCESS ═══ -->
 <section class="band band--edge">
   <div class="inner">
-    <p class="eyebrow" data-reveal><span class="dot"></span> How it runs · five legs</p>
-    <h2 data-reveal>Costed at schematic, not at <span class="serif grad">fab</span>.</h2>
-    <p class="lede" data-reveal>Hardware punishes surprises. Every leg ends with something you can hold, read, or run before the next one starts.</p>
+    <p class="eyebrow" data-reveal><span class="dot"></span> How a project runs</p>
+    <h2 data-reveal>Priced at the schematic, not at <span class="serif grad">fab</span>.</h2>
+    <p class="lede" data-reveal>Hardware punishes surprises. Each step ends with something you can hold, read, or run before the next one starts.</p>
 
     <div class="track" id="track">
       <ol>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 01 · 1–2 wks</span><h3>Requirements</h3>
-          <p>What it has to do, where it has to survive, what it can weigh, and what it can cost per unit.</p></li>
+          <span class="leg">Step 01 · 1–2 wks</span><h3>Requirements</h3>
+          <p>What it must do, where it has to survive, what it can weigh, and what a unit can cost.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 02 · 2–3 wks</span><h3>Schematic &amp; BOM</h3>
-          <p>Parts chosen for availability and compliance, not just spec. Costed across tiers before layout starts.</p></li>
+          <span class="leg">Step 02 · 2–3 wks</span><h3>Schematic and BOM</h3>
+          <p>Parts chosen for availability and compliance, not only the datasheet. Priced at each quantity before layout starts.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 03 · 3–5 wks</span><h3>Layout &amp; fab</h3>
-          <p>Routing, DFM review, boards ordered and assembled. Lead times are what they are and you'll see them up front.</p></li>
+          <span class="leg">Step 03 · 3–5 wks</span><h3>Layout and fab</h3>
+          <p>Routing, a manufacturing review, then boards ordered and built. Lead times are named before you commit.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 04 · 3–6 wks</span><h3>Bring-up &amp; firmware</h3>
-          <p>Power on rail by rail, then drivers, then the application layer. Documented as it happens.</p></li>
+          <span class="leg">Step 04 · 3–6 wks</span><h3>Bring-up and firmware</h3>
+          <p>Power, one rail at a time, then drivers, then the application. Written down as it happens.</p></li>
         <li class="fix"><span class="line"></span><span class="mark"></span>
-          <span class="leg">Leg 05 · field</span><h3>Test in the weather</h3>
-          <p>At real range, in real rain, on real water. Bench results are a hypothesis until then.</p></li>
+          <span class="leg">Step 05 · field</span><h3>Test in the weather</h3>
+          <p>Real range, real rain, real water. A result on the bench is a guess until then.</p></li>
       </ol>
     </div>
   </div>
@@ -541,9 +541,9 @@ form.is-sent{display:none;}
 <section class="band band--edge">
   <div class="inner honest">
     <p class="eyebrow" data-reveal><span class="dot"></span> Straight answer</p>
-    <p class="quote" data-reveal>Hardware is slower and more expensive than software. That isn't a sales problem, it's physics.</p>
-    <p class="lede" data-reveal>A code revision costs an afternoon. A board revision costs weeks, a minimum order, and another round of bring-up. So the first question I'll ask is whether your problem can be solved with software on hardware that already exists — an off-the-shelf flight controller, a commercial sensor, someone else's radio. Often it can, and I'll say so.</p>
-    <p class="lede" data-reveal style="color:var(--ice);margin-top:22px;">Custom silicon earns its keep when the off-the-shelf part doesn't exist, can't be sourced compliantly, costs too much at volume, or won't survive where you're putting it. Those are real and I've hit all four. They're just rarer than people expect.</p>
+    <p class="quote" data-reveal>A board revision costs weeks. A code revision costs an afternoon.</p>
+    <p class="lede" data-reveal>Hardware takes longer and costs more than software because a board change means a minimum order and another round of bring-up. The first question is whether the job can be done on hardware that already exists: an off-the-shelf flight controller, a commercial sensor, someone else's radio. Often it can, and I will say so.</p>
+    <p class="lede" data-reveal style="color:var(--ice);margin-top:22px;">A custom board earns its keep when the part you need does not exist, cannot be sourced under the rules you have to follow, costs too much at your quantity, or will not survive where you are putting it. I have hit all four. They are rarer than the first sketch suggests.</p>
   </div>
 </section>
 
@@ -553,11 +553,10 @@ form.is-sent{display:none;}
     <div class="form-grid">
       <div>
         <p class="eyebrow" data-reveal><span class="dot"></span> Start a conversation</p>
-        <h2 data-reveal>Tell me what you're <span class="serif grad">building</span>.</h2>
-        <p class="lede" data-reveal>Napkin sketch or half-finished prototype, both are fine. First conversation is free and ends with an honest read on feasibility, rough cost band, and whether custom hardware is the right answer at all.</p>
+        <h2 data-reveal>Tell me what it has to <span class="serif grad">survive</span>.</h2>
+        <p class="lede" data-reveal>A sketch or a half-finished prototype is enough to start. The first conversation is free. It ends with a read on whether the idea is feasible, a rough cost range, and whether a custom board is the right answer.</p>
         <div data-reveal style="margin-top:34px;">
-          <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
-          <a class="contact-line" href="tel:+19075550100" data-track="call">(907) 555-0100</a>
+          <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or email me directly</span>
           <a class="contact-line" href="mailto:info@mitchelturner.dev" data-track="email">info@mitchelturner.dev</a>
         </div>
       </div>
@@ -599,7 +598,7 @@ form.is-sent{display:none;}
               <textarea id="details" name="details" placeholder="What it needs to do, what you've already tried, and what's blocking you. Constraints are more useful than features."></textarea>
             </div>
             <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Send project details →</span></button>
-            <p class="formnote">No newsletter, no drip sequence. Your details go to one inbox — mine. Happy to sign an NDA before you send specifics.</p>
+            <p class="formnote">This goes to my inbox. I won't add you to a newsletter. I can sign an NDA before you send specifics.</p>
           </form>
 
           <div class="thanks" id="thanks" role="status">
@@ -618,7 +617,7 @@ form.is-sent{display:none;}
 </footer>
 
 <div class="dock" id="dock">
-  <p><b>Napkin sketch to flying prototype.</b></p>
+  <p><b>From a sketch to a unit you can test.</b></p>
   <a class="btn btn--primary btn--sm" href="#start" data-cta="dock"><span>Start</span></a>
 </div>
 

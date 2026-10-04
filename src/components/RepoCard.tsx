@@ -1,10 +1,8 @@
-"use client";
-
 import Image from "next/image";
 import { languageColor, type PortfolioRepo } from "@/lib/github";
 import { ogImageUrl, timeAgo } from "@/lib/format";
 import { resolveLiveUrl } from "@/lib/liveUrls";
-import { trackViewDemo } from "@/lib/analytics";
+import { TrackedRepoLink } from "@/components/TrackedRepoLink";
 
 const DEPLOY_STATE: Record<string, { label: string; classes: string; dot: string }> = {
   success: {
@@ -48,19 +46,16 @@ function ExternalLink({
   href,
   children,
   primary,
-  onClick,
 }: {
   href: string;
   children: React.ReactNode;
   primary?: boolean;
-  onClick?: () => void;
 }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={onClick}
       className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition ${
         primary
           ? "bg-gradient-to-r from-sky-500 via-cyan-400 to-teal-300 text-slate-950 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
@@ -166,16 +161,16 @@ export function RepoCard({ repo }: { repo: PortfolioRepo }) {
 
         <div className="mt-auto flex flex-wrap gap-2 border-t border-white/5 pt-3">
           {liveUrl && (
-            <ExternalLink
+            <TrackedRepoLink
               href={liveUrl}
-              primary
-              onClick={() => trackViewDemo(repo.name)}
+              repoName={repo.name}
+              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-medium transition bg-gradient-to-r from-sky-500 via-cyan-400 to-teal-300 text-slate-950 shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40"
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M7 17 17 7M9 7h8v8" />
               </svg>
               View demo
-            </ExternalLink>
+            </TrackedRepoLink>
           )}
           <ExternalLink href={repo.url}>
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">

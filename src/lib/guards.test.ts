@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { languageShares } from "./languages.ts";
 import { rateLimit } from "./rateLimit.ts";
 import { safeHttpUrl } from "./safeUrl.ts";
-import { isPublicLiveUrl } from "./liveUrls.ts";
+import { isPublicLiveUrl, LIVE_URL_OVERRIDES, resolveLiveUrl } from "./liveUrls.ts";
 
 describe("languageShares", () => {
   it("keeps rounded slices from exceeding 100%", () => {
@@ -41,6 +41,40 @@ describe("isPublicLiveUrl", () => {
     assert.equal(isPublicLiveUrl("https://railway.com/project/abc"), false);
     assert.equal(isPublicLiveUrl("https://github.com/MitchelTurner/FlagShip"), false);
     assert.equal(isPublicLiveUrl("https://mitchelturner.dev"), true);
+    assert.equal(isPublicLiveUrl("https://gyotaku.up.railway.app"), true);
+  });
+
+  it("points every live-demo override at a public site", () => {
+    assert.ok(Object.keys(LIVE_URL_OVERRIDES).length > 5);
+    for (const url of Object.values(LIVE_URL_OVERRIDES)) {
+      assert.equal(isPublicLiveUrl(url), true, url);
+    }
+  });
+});
+
+describe("resolveLiveUrl", () => {
+  it("prefers the public override over a Railway dashboard URL", () => {
+    assert.equal(
+      resolveLiveUrl({
+        name: "Waterfowl",
+        homepage: "https://railway.com/project/abc",
+        pagesUrl: null,
+        deployment: { url: "https://railway.com/project/abc" },
+      }),
+      "https://waterfowl.up.railway.app",
+    );
+  });
+
+  it("accepts a GitHub homepage that has no scheme", () => {
+    assert.equal(
+      resolveLiveUrl({
+        name: "NotInTheMap",
+        homepage: "mitchelturner.com",
+        pagesUrl: null,
+        deployment: null,
+      }),
+      "https://mitchelturner.com",
+    );
   });
 });
 

@@ -22,7 +22,7 @@ export async function LiveWorkPortfolio({
   fresh?: boolean;
 }) {
   const resolved = await resolveGithubUsernameWithSource();
-  const { username, repos, error } = await fetchPortfolioRepos(24, { fresh });
+  const { username, repos, error } = await fetchPortfolioRepos(48, { fresh });
 
   const totalStars = repos.reduce((s, r) => s + r.stars, 0);
   const deployed = repos.filter(

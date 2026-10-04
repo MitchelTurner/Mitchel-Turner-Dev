@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   const limitParam = Number(searchParams.get("limit"));
   const limit =
     Number.isFinite(limitParam) && limitParam > 0
-      ? Math.min(Math.floor(limitParam), 30)
+      ? Math.min(Math.floor(limitParam), 48)
       : 12;
   // Uncached fetches hit GitHub on every request. Keep that to admin sessions.
   const fresh =
@@ -36,6 +36,6 @@ export async function POST() {
   revalidatePath("/");
   revalidatePath("/github");
 
-  const result = await fetchPortfolioRepos(24, { fresh: true });
+  const result = await fetchPortfolioRepos(48, { fresh: true });
   return NextResponse.json({ ok: true, ...result });
 }

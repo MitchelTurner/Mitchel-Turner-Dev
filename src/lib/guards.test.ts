@@ -3,7 +3,39 @@ import { describe, it } from "node:test";
 import { languageShares } from "./languages.ts";
 import { rateLimit } from "./rateLimit.ts";
 import { safeHttpUrl } from "./safeUrl.ts";
+import { selectPortfolioUsername } from "./githubUsername.ts";
 import { isPublicLiveUrl, LIVE_URL_OVERRIDES, resolveLiveUrl } from "./liveUrls.ts";
+
+describe("selectPortfolioUsername", () => {
+  it("keeps MitchelTurner when GITHUB_USERNAME is that account", () => {
+    assert.deepEqual(
+      selectPortfolioUsername({ env: "MitchelTurner", config: "MitchelTurner" }),
+      { username: "MitchelTurner", source: "env" },
+    );
+  });
+
+  it("canonicalizes a differently cased env value", () => {
+    assert.deepEqual(selectPortfolioUsername({ env: "@mitchelturner" }), {
+      username: "MitchelTurner",
+      source: "env",
+    });
+  });
+
+  it("ignores a placeholder or different env and uses MitchelTurner", () => {
+    assert.deepEqual(
+      selectPortfolioUsername({ env: "your-github-handle", config: "MitchelTurner" }),
+      { username: "MitchelTurner", source: "config" },
+    );
+    assert.deepEqual(selectPortfolioUsername({ env: "TheMitchyBoy" }), {
+      username: "MitchelTurner",
+      source: "config",
+    });
+    assert.deepEqual(
+      selectPortfolioUsername({ database: "someone-else", env: "MitchelTurner" }),
+      { username: "MitchelTurner", source: "env" },
+    );
+  });
+});
 
 describe("languageShares", () => {
   it("keeps rounded slices from exceeding 100%", () => {

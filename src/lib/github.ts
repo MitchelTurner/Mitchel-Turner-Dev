@@ -163,11 +163,10 @@ export interface PortfolioResult {
   error: string | null;
 }
 
-// Fetch and normalize a user's public repositories for the portfolio.
-// The configured username is resolved live (so admin/env changes apply
-// immediately), while GitHub API responses are cached briefly to respect rate
-// limits. The cache key includes the username, so switching accounts always
-// fetches fresh.
+// Fetch and normalize public repositories for the portfolio.
+// The username is resolved live (always MitchelTurner). GitHub API responses
+// are cached briefly to respect rate limits. The cache key includes the
+// username.
 export async function fetchPortfolioRepos(
   limit = 12,
   options?: { fresh?: boolean },

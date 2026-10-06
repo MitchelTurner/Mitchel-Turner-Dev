@@ -1,18 +1,21 @@
 /**
  * Application settings — key/value store in SQLite with env and file fallbacks.
  *
- * GitHub username resolution order (first match wins):
- *   1. Admin dashboard (Prisma `Setting` table)
- *   2. `GITHUB_USERNAME` environment variable
- *   3. `github.config.json` in the project root (committed, serverless-safe)
+ * Live Work always syncs MitchelTurner. A database, GITHUB_USERNAME, or
+ * github.config.json value is used as the reported source only when it is
+ * that account. Anything else is ignored.
  */
 import { readFileSync } from "fs";
 import { join } from "path";
+import {
+  selectPortfolioUsername,
+  type UsernameSource,
+} from "./githubUsername";
 import { prisma } from "./prisma";
 
 export const GITHUB_USERNAME_KEY = "github_username";
 
-export type UsernameSource = "database" | "env" | "config" | null;
+export type { UsernameSource };
 
 function normalizeUsername(value: string): string {
   return value.trim().replace(/^@/, "");
@@ -55,37 +58,27 @@ export async function setSetting(key: string, value: string): Promise<void> {
   });
 }
 
-// Resolve the GitHub username from every supported source.
-// Order: admin DB → GITHUB_USERNAME env → github.config.json (committed).
+// Resolve the GitHub username. Live Work stays on MitchelTurner even when
+// GITHUB_USERNAME or a saved admin value points somewhere else.
 export async function resolveGithubUsernameWithSource(): Promise<{
-  username: string | null;
+  username: string;
   source: UsernameSource;
 }> {
+  let database: string | null = null;
   try {
     const row = await prisma.setting.findUnique({
       where: { key: GITHUB_USERNAME_KEY },
     });
-    if (row?.value?.trim()) {
-      return {
-        username: normalizeUsername(row.value),
-        source: "database",
-      };
-    }
+    database = row?.value ?? null;
   } catch {
     // DB unavailable — fall through to env/config.
   }
 
-  const env = process.env.GITHUB_USERNAME?.trim();
-  if (env) {
-    return { username: normalizeUsername(env), source: "env" };
-  }
-
-  const config = readConfigUsername();
-  if (config) {
-    return { username: config, source: "config" };
-  }
-
-  return { username: null, source: null };
+  return selectPortfolioUsername({
+    database,
+    env: process.env.GITHUB_USERNAME,
+    config: readConfigUsername(),
+  });
 }
 
 export async function resolveGithubUsername(): Promise<string | null> {

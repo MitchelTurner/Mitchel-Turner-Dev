@@ -63,7 +63,7 @@ export async function LiveWorkPortfolio({
 
         {username && resolved.source && (
           <p className="mt-3 text-xs text-white/40">
-            Syncing via {SOURCE_HINT[resolved.source]}
+            Syncing @{username} via {SOURCE_HINT[resolved.source]}
             {fresh ? " · just refreshed" : " · auto-refreshes every ~2 minutes"}
           </p>
         )}

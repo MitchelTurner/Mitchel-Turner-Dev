@@ -37,7 +37,7 @@ The homepage **is** the portfolio. A separate `/about` page covers background an
 
 ### GitHub integration
 
-- Username resolution: **admin DB** → `GITHUB_USERNAME` env → `github.config.json`
+- Username is pinned to **MitchelTurner**. A matching admin DB value, `GITHUB_USERNAME`, or `github.config.json` entry is what the homepage reports as the source; any other handle is ignored
 - Deployment status from repo homepage, GitHub Pages, or the Deployments API
 - Rate-limit aware: without a token, deployment badges are fetched for the first
   ~12 repos only (60 req/hr limit); a `GITHUB_TOKEN` raises the limit to 5,000
@@ -143,7 +143,7 @@ Open [http://localhost:3000](http://localhost:3000). Admin: [http://localhost:30
 |----------|----------|-------------|
 | `DATABASE_URL` | Yes | SQLite path, e.g. `file:./dev.db` |
 | `ADMIN_PASSWORD` | Yes | Password for `/admin` (change before deploy) |
-| `GITHUB_USERNAME` | No | GitHub account for Live Work |
+| `GITHUB_USERNAME` | No | Set to `MitchelTurner` so Live Work reports the env var as its sync source |
 | `GITHUB_TOKEN` | Recommended | Read-only token: 60 → 5,000 req/hr and deployment badges for every repo (without it, only the first ~12 repos are enriched) |
 | `RESEND_API_KEY` | No | [Resend](https://resend.com) API key for the `/contact` form. Without it the form falls back to a `mailto:` link |
 | `CONTACT_TO_EMAIL` | No | Inbox for contact submissions (default `info@mitchelturner.dev`) |
@@ -155,7 +155,7 @@ Committed fallback when env/DB are unavailable (ideal for serverless):
 
 ```json
 {
-  "username": "your-github-handle"
+  "username": "MitchelTurner"
 }
 ```
 

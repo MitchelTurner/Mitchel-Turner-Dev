@@ -93,11 +93,13 @@ export async function POST(req: NextRequest) {
   revalidatePath("/");
   revalidatePath("/github");
 
+  const resolved = await resolveGithubUsernameWithSource();
+
   return NextResponse.json({
     ok: true,
-    username,
+    username: resolved.username,
     persisted,
-    activeSource: persisted ? "database" : null,
+    activeSource: resolved.source,
     hint: persisted
       ? null
       : "Set GITHUB_USERNAME in your host's environment variables, or commit your username in github.config.json.",

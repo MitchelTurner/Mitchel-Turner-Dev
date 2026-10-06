@@ -62,8 +62,8 @@ export function GithubSettings() {
       setMessage({
         kind: "ok",
         text: data.persisted
-          ? "Saved. Live Work will sync from this account."
-          : `Saved in session only. ${data.hint ?? "Set GITHUB_USERNAME or edit github.config.json for production."}`,
+          ? `Saved. Live Work syncs @${data.username}.`
+          : `Saved in session only. Live Work syncs @${data.username}. ${data.hint ?? "Set GITHUB_USERNAME or edit github.config.json for production."}`,
       });
     } finally {
       setSaving(false);

@@ -6,22 +6,14 @@
  */
 import Link from "next/link";
 import { fetchPortfolioRepos } from "@/lib/github";
-import { resolveGithubUsernameWithSource } from "@/lib/settings";
 import { RepoCard } from "@/components/RepoCard";
 import { ExternalSites } from "@/components/ExternalSites";
-
-const SOURCE_HINT = {
-  database: "admin dashboard",
-  env: "GITHUB_USERNAME environment variable",
-  config: "github.config.json",
-} as const;
 
 export async function LiveWorkPortfolio({
   fresh = false,
 }: {
   fresh?: boolean;
 }) {
-  const resolved = await resolveGithubUsernameWithSource();
   const { username, repos, error } = await fetchPortfolioRepos(48, { fresh });
 
   const totalStars = repos.reduce((s, r) => s + r.stars, 0);
@@ -61,10 +53,10 @@ export async function LiveWorkPortfolio({
           live deployment links.
         </p>
 
-        {username && resolved.source && (
+        {username && (
           <p className="mt-3 text-xs text-white/40">
-            Syncing @{username} via {SOURCE_HINT[resolved.source]}
-            {fresh ? " · just refreshed" : " · auto-refreshes every ~2 minutes"}
+            Syncing @{username}
+            {fresh ? " · just refreshed" : " auto-refreshes every ~2 minutes"}
           </p>
         )}
 

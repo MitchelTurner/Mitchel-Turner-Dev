@@ -5,6 +5,53 @@ import { rateLimit } from "./rateLimit.ts";
 import { safeHttpUrl } from "./safeUrl.ts";
 import { selectPortfolioUsername } from "./githubUsername.ts";
 import { isPublicLiveUrl, LIVE_URL_OVERRIDES, resolveLiveUrl } from "./liveUrls.ts";
+import { createTtlCache } from "./ttlCache.ts";
+
+describe("createTtlCache", () => {
+  it("serves a repeated read from memory", async () => {
+    const cache = createTtlCache<number>(60_000);
+    let calls = 0;
+    const loader = async () => ++calls;
+    assert.equal(await cache.get("repos", loader), 1);
+    assert.equal(await cache.get("repos", loader), 1);
+    assert.equal(calls, 1);
+  });
+
+  it("shares one load across concurrent misses", async () => {
+    const cache = createTtlCache<number>(60_000);
+    let calls = 0;
+    const loader = () =>
+      new Promise<number>((resolve) => {
+        calls += 1;
+        setTimeout(() => resolve(calls), 20);
+      });
+    const [first, second] = await Promise.all([
+      cache.get("repos", loader),
+      cache.get("repos", loader),
+    ]);
+    assert.equal(first, 1);
+    assert.equal(second, 1);
+    assert.equal(calls, 1);
+  });
+
+  it("returns the last value immediately once the ttl has passed", async () => {
+    const cache = createTtlCache<number>(0);
+    let calls = 0;
+    assert.equal(await cache.get("repos", async () => ++calls), 1);
+    assert.equal(await cache.get("repos", async () => ++calls), 1);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    assert.equal(calls, 2);
+    assert.equal(await cache.get("repos", async () => ++calls), 2);
+  });
+
+  it("does not store a value the caller rejects", async () => {
+    const cache = createTtlCache<number>(60_000);
+    let calls = 0;
+    const loader = async () => ++calls;
+    assert.equal(await cache.get("repos", loader, { cacheable: () => false }), 1);
+    assert.equal(await cache.get("repos", loader, { cacheable: () => false }), 2);
+  });
+});
 
 describe("selectPortfolioUsername", () => {
   it("keeps MitchelTurner when GITHUB_USERNAME is that account", () => {

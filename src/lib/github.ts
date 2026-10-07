@@ -10,8 +10,9 @@
  * @see /api/og/repo for per-repo cover graphics
  */
 import { languageShares } from "./languages";
-import { isPublicLiveUrl } from "./liveUrls";
+import { isPublicLiveUrl, resolveLiveUrl } from "./liveUrls";
 import { resolveGithubUsername } from "./settings";
+import { createTtlCache } from "./ttlCache";
 
 const API = "https://api.github.com";
 // Cache GitHub responses to respect rate limits. Repo lists refresh every 2 min;
@@ -21,7 +22,9 @@ const REPO_DETAIL_REVALIDATE = 3600;
 // Without a token GitHub allows only 60 requests/hr. Language + deployment
 // enrichment costs several requests per repo, so we cap how many repos get
 // deployment lookups when unauthenticated to protect the core repo-list
-// request. A GITHUB_TOKEN removes this cap (5,000 req/hr).
+// request. A GITHUB_TOKEN removes this cap (5,000 req/hr). The assembled
+// portfolio is cached in memory for the same 2 minutes the homepage advertises,
+// so a visitor does not wait on GitHub after the first load.
 const UNAUTH_DEPLOYMENT_LIMIT = 12;
 
 export interface RepoDeployment {
@@ -89,6 +92,17 @@ function pagesUrlFor(repo: RawRepo): string | null {
   // GitHub Pages default URL. Custom domains aren't exposed here without an
   // extra authenticated call, so the homepage field usually covers those.
   return `https://${repo.owner.login}.github.io/${repo.name}/`;
+}
+
+function hasKnownPublicUrl(repo: RawRepo): boolean {
+  return (
+    resolveLiveUrl({
+      name: repo.name,
+      homepage: repo.homepage?.trim() ? repo.homepage.trim() : null,
+      pagesUrl: pagesUrlFor(repo),
+      deployment: null,
+    }) !== null
+  );
 }
 
 async function fetchLanguages(
@@ -163,20 +177,39 @@ export interface PortfolioResult {
   error: string | null;
 }
 
+const portfolioCache = createTtlCache<PortfolioResult>(REPO_LIST_REVALIDATE * 1000);
+
 // Fetch and normalize public repositories for the portfolio.
-// The username is resolved live (always MitchelTurner). GitHub API responses
-// are cached briefly to respect rate limits. The cache key includes the
-// username.
+// The username is resolved live (always MitchelTurner). Repeat page views
+// reuse the last result for two minutes; a refresh after that happens in the
+// background. GitHub responses are also cached on the fetch itself.
 export async function fetchPortfolioRepos(
   limit = 12,
   options?: { fresh?: boolean },
 ): Promise<PortfolioResult> {
-  const username = await resolveGithubUsername();
+  return portfolioCache.get(
+    String(limit),
+    async () => {
+      const username = await resolveGithubUsername();
+      return loadPortfolioRepos(username, limit, options?.fresh === true);
+    },
+    {
+      fresh: options?.fresh,
+      cacheable: (result) => result.error === null,
+    },
+  );
+}
+
+async function loadPortfolioRepos(
+  username: string | null,
+  limit: number,
+  fresh: boolean,
+): Promise<PortfolioResult> {
   if (!username) {
     return { username: null, repos: [], error: "No GitHub username configured." };
   }
 
-  const listCache = options?.fresh
+  const listCache = fresh
     ? ({ cache: "no-store" } as const)
     : ({ next: { revalidate: REPO_LIST_REVALIDATE } } as const);
 
@@ -226,9 +259,11 @@ export async function fetchPortfolioRepos(
 
   const repos = await Promise.all(
     selected.map(async (r, index): Promise<PortfolioRepo> => {
+      const needsDeploymentLookup =
+        index < deploymentLimit && !hasKnownPublicUrl(r);
       const [languages, deployment] = await Promise.all([
         fetchLanguages(r.owner.login, r.name),
-        index < deploymentLimit
+        needsDeploymentLookup
           ? fetchDeployment(r.owner.login, r.name)
           : Promise.resolve(null),
       ]);

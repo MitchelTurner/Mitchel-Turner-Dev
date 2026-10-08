@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 /**
  * Stable color washes for portfolio cards and their cover art.
  *
@@ -66,11 +68,12 @@ export function cardWash(name: string) {
 }
 
 /** CSS variables consumed by `.card-wash` in globals.css. */
-export function cardWashVars(name: string): Record<"--wash" | "--wash-x" | "--wash-y", string> {
+export function cardWashVars(name: string): CSSProperties {
   const wash = cardWash(name);
+  // React's CSSProperties type does not include custom properties.
   return {
     "--wash": wash.a,
     "--wash-x": wash.x,
     "--wash-y": wash.y,
-  };
+  } as CSSProperties;
 }

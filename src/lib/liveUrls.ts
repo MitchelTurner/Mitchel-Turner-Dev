@@ -10,6 +10,7 @@
  * picked up automatically — this map overrides that when needed.
  */
 export const LIVE_URL_OVERRIDES: Record<string, string> = {
+  "AKDOT-STIP": "https://ketchikan.report",
   Concierge: "https://personal-assistant.up.railway.app",
   CRE: "https://greenville-cre.up.railway.app",
   "Creek-Street": "https://creekstreet.org",

@@ -144,6 +144,20 @@ describe("resolveLiveUrl", () => {
     );
   });
 
+  it("links the AKDOT STIP card to ketchikan.report", () => {
+    assert.equal(
+      resolveLiveUrl({
+        name: "AKDOT-STIP",
+        homepage: null,
+        pagesUrl: null,
+        deployment: {
+          url: "https://railway.com/project/825d4a01-9ab6-4edd-b08e-134805522a9b",
+        },
+      }),
+      "https://ketchikan.report",
+    );
+  });
+
   it("accepts a GitHub homepage that has no scheme", () => {
     assert.equal(
       resolveLiveUrl({

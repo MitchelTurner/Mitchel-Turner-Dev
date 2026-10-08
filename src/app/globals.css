@@ -131,6 +131,29 @@ body:has(.site-nav) .site-main {
   backdrop-filter: blur(20px);
 }
 
+/* Faint, name-stable color in the card body. The cover image hides the top. */
+.card-wash {
+  position: relative;
+}
+
+.card-wash::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    320px 190px at var(--wash-x, 80%) var(--wash-y, 120%),
+    color-mix(in srgb, var(--wash, #35c6ff) 34%, transparent),
+    transparent 72%
+  );
+}
+
+.card-wash > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* ── Site chrome (shared with Ads landing nav/footer) ── */
 .site-nav {
   position: fixed;

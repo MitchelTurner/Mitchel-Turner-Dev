@@ -4,6 +4,7 @@ import { languageShares } from "./languages.ts";
 import { rateLimit } from "./rateLimit.ts";
 import { safeHttpUrl } from "./safeUrl.ts";
 import { selectPortfolioUsername } from "./githubUsername.ts";
+import { cardWash } from "./cardWash.ts";
 import { isPublicLiveUrl, LIVE_URL_OVERRIDES, resolveLiveUrl } from "./liveUrls.ts";
 import { createTtlCache } from "./ttlCache.ts";
 
@@ -112,6 +113,19 @@ describe("safeHttpUrl", () => {
     assert.equal(safeHttpUrl("data:text/html,hi"), null);
     assert.equal(safeHttpUrl("//evil.example/phish"), null);
     assert.equal(safeHttpUrl("/uploads/../../etc/passwd"), null);
+  });
+});
+
+describe("cardWash", () => {
+  it("keeps the same wash for a name and differs across names", () => {
+    const akdot = cardWash("AKDOT-STIP");
+    assert.deepEqual(cardWash("AKDOT-STIP"), akdot);
+    assert.ok(akdot.angle >= 110 && akdot.angle <= 206);
+    assert.match(akdot.a, /^#[0-9a-f]{6}$/);
+    const other = cardWash("Gyotaku");
+    assert.ok(
+      akdot.a !== other.a || akdot.angle !== other.angle || akdot.x !== other.x,
+    );
   });
 });
 

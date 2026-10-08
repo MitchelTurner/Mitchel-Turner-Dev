@@ -7,29 +7,9 @@
  */
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
+import { cardWash } from "@/lib/cardWash";
 
 export const runtime = "nodejs";
-
-// Same ocean-depth palette as /api/og/repo so both grids feel like one system.
-const GRADIENTS: [string, string][] = [
-  ["#0ea5e9", "#5eead4"],
-  ["#0284c7", "#22d3ee"],
-  ["#0d9488", "#22d3ee"],
-  ["#1d4ed8", "#22d3ee"],
-  ["#7c3aed", "#22d3ee"],
-  ["#0891b2", "#5eead4"],
-  ["#075985", "#34d399"],
-  ["#2563eb", "#5eead4"],
-];
-
-function hash(str: string): number {
-  let h = 0;
-  for (let i = 0; i < str.length; i++) {
-    h = (h << 5) - h + str.charCodeAt(i);
-    h |= 0;
-  }
-  return Math.abs(h);
-}
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -44,7 +24,7 @@ export async function GET(req: NextRequest) {
     .filter(Boolean)
     .slice(0, 4);
 
-  const [c1, c2] = GRADIENTS[hash(name) % GRADIENTS.length];
+  const wash = cardWash(name);
 
   return new ImageResponse(
     (
@@ -56,7 +36,8 @@ export async function GET(req: NextRequest) {
           flexDirection: "column",
           justifyContent: "space-between",
           padding: "64px",
-          background: "#04070f",
+          backgroundColor: "#04101a",
+          backgroundImage: `linear-gradient(${wash.angle}deg, ${wash.a}55 0%, #04101a 46%, ${wash.b}44 100%)`,
           fontFamily: "sans-serif",
           position: "relative",
         }}
@@ -64,29 +45,27 @@ export async function GET(req: NextRequest) {
         <div
           style={{
             position: "absolute",
-            top: -160,
-            left: -120,
             width: 560,
             height: 560,
             borderRadius: 9999,
-            background: c1,
-            opacity: 0.45,
+            background: wash.a,
+            opacity: 0.42,
             filter: "blur(80px)",
             display: "flex",
+            ...wash.orb.a,
           }}
         />
         <div
           style={{
             position: "absolute",
-            bottom: -200,
-            right: -140,
             width: 600,
             height: 600,
             borderRadius: 9999,
-            background: c2,
-            opacity: 0.4,
+            background: wash.b,
+            opacity: 0.36,
             filter: "blur(90px)",
             display: "flex",
+            ...wash.orb.b,
           }}
         />
 

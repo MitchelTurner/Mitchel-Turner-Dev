@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cardWashVars } from "@/lib/cardWash";
 import { EXTERNAL_SITES, type ExternalSite } from "@/lib/externalSites";
 import { ogSiteImageUrl } from "@/lib/format";
 
@@ -103,7 +104,8 @@ function ExternalSiteCard({ site }: { site: ExternalSite }) {
         href={site.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="group flex flex-col overflow-hidden rounded-2xl glass transition hover:border-white/20 hover:shadow-2xl hover:shadow-cyan-500/10"
+        className="group card-wash flex flex-col overflow-hidden rounded-2xl glass transition hover:border-white/20 hover:shadow-2xl hover:shadow-cyan-500/10"
+        style={cardWashVars(site.name)}
       >
         {body}
       </a>
@@ -111,7 +113,10 @@ function ExternalSiteCard({ site }: { site: ExternalSite }) {
   }
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl glass">
+    <div
+      className="card-wash flex flex-col overflow-hidden rounded-2xl glass"
+      style={cardWashVars(site.name)}
+    >
       {body}
     </div>
   );

@@ -2,6 +2,7 @@ import Image from "next/image";
 import type { PortfolioRepo } from "@/lib/github";
 import { languageColor } from "@/lib/languages";
 import { ogImageUrl, timeAgo } from "@/lib/format";
+import { cardWashVars } from "@/lib/cardWash";
 import { resolveLiveUrl } from "@/lib/liveUrls";
 import { TrackedRepoLink } from "@/components/TrackedRepoLink";
 
@@ -76,7 +77,10 @@ export function RepoCard({ repo }: { repo: PortfolioRepo }) {
     : null;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl glass transition hover:border-white/20 hover:shadow-2xl hover:shadow-cyan-500/10">
+    <article
+      className="group card-wash flex flex-col overflow-hidden rounded-2xl glass transition hover:border-white/20 hover:shadow-2xl hover:shadow-cyan-500/10"
+      style={cardWashVars(repo.name)}
+    >
       <div className="relative aspect-[1200/630] w-full overflow-hidden bg-black/40">
         <Image
           src={ogImageUrl(repo)}

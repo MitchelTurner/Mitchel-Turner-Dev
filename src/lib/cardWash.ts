@@ -18,10 +18,11 @@ export const CARD_PALETTE = [
 ] as const;
 
 const BODY_ANCHORS = [
-  { x: "92%", y: "118%" },
-  { x: "8%", y: "116%" },
-  { x: "50%", y: "126%" },
-  { x: "100%", y: "68%" },
+  { x: "88%", y: "84%" },
+  { x: "14%", y: "88%" },
+  { x: "52%", y: "92%" },
+  { x: "76%", y: "72%" },
+  { x: "24%", y: "76%" },
 ] as const;
 
 export type OrbBox = {

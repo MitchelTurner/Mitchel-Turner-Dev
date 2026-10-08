@@ -131,7 +131,7 @@ body:has(.site-nav) .site-main {
   backdrop-filter: blur(20px);
 }
 
-/* Faint, name-stable color in the card body. The cover image hides the top. */
+/* Faint, name-stable color in the lower half of the card. The cover hides the top. */
 .card-wash {
   position: relative;
 }
@@ -143,9 +143,9 @@ body:has(.site-nav) .site-main {
   z-index: 0;
   pointer-events: none;
   background: radial-gradient(
-    320px 190px at var(--wash-x, 80%) var(--wash-y, 120%),
-    color-mix(in srgb, var(--wash, #35c6ff) 34%, transparent),
-    transparent 72%
+    280px 220px at var(--wash-x, 80%) var(--wash-y, 86%),
+    color-mix(in srgb, var(--wash, #35c6ff) 46%, transparent),
+    transparent 70%
   );
 }
 

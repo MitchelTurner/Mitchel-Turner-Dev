@@ -34,9 +34,9 @@ export type ExternalSite = {
 
 export const EXTERNAL_SITES: ExternalSite[] = [
   {
-    name: "Port of Ketchikan",
+    name: "Port & Harbors",
     description:
-      "Online boat moorage and harbor registration for the City of Ketchikan's Port & Harbors. Boaters register a vessel and pay moorage across Ketchikan's small-boat harbors online — no trip to the harbor office required.",
+      "Online boat moorage and harbor registration. Boaters register a vessel and pay moorage across the small-boat harbors online — no trip to the harbor office required.",
     role: "Client project",
     tags: ["Web app", "Online payments", "Municipal"],
     year: "2026",

@@ -4,7 +4,7 @@ import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 export const metadata: Metadata = {
   title: "About — Mitchel Turner",
   description:
-    "Mitchel Turner — developer in Ketchikan, Alaska. Data pipelines, machine learning, API integrations, hardware, and custom tools.",
+    "Mitchel Turner — developer in Alaska. Data pipelines, machine learning, API integrations, hardware, and custom tools.",
 };
 
 const WORK_AREAS = [
@@ -69,7 +69,7 @@ export default function AboutPage() {
     <div className="mx-auto max-w-3xl px-6 py-12 sm:py-20">
       <div className="mb-12">
         <span className="inline-flex items-center gap-2 rounded-full glass px-4 py-1.5 text-xs font-medium text-white/70">
-          Ketchikan, Alaska
+          Alaska
         </span>
 
         <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
@@ -78,7 +78,7 @@ export default function AboutPage() {
         </h1>
 
         <p className="mt-5 text-lg leading-relaxed text-white/65">
-          I&apos;m a developer based in Ketchikan, Alaska. I build practical
+          I&apos;m a developer based in Alaska. I build practical
           software for people who have data or a device and need it to actually
           do something.
         </p>

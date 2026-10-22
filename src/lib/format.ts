@@ -1,3 +1,5 @@
+import { displayCopy, displayRepoName, omitCityName } from "./cityName";
+
 // Compact "time ago" formatter for repo activity timestamps.
 export function timeAgo(iso: string): string {
   const then = new Date(iso).getTime();
@@ -35,12 +37,16 @@ export function ogImageUrl(repo: {
   topics: string[];
 }): string {
   const params = new URLSearchParams({
-    name: repo.name,
-    desc: repo.description ?? "",
+    name: displayRepoName(repo.name),
+    desc: displayCopy(repo.description),
     lang: repo.language ?? "",
     stars: String(repo.stars),
     forks: String(repo.forks),
-    topics: repo.topics.slice(0, 4).join(","),
+    topics: repo.topics
+      .map((topic) => omitCityName(topic))
+      .filter(Boolean)
+      .slice(0, 4)
+      .join(","),
   });
   return `/api/og/repo?${params.toString()}`;
 }

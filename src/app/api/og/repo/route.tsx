@@ -8,20 +8,21 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { cardWash } from "@/lib/cardWash";
+import { displayCopy, displayRepoName, omitCityName } from "@/lib/cityName";
 import { languageColor } from "@/lib/languages";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const name = (searchParams.get("name") ?? "repository").slice(0, 40);
-  const desc = (searchParams.get("desc") ?? "").slice(0, 130);
+  const name = displayRepoName(searchParams.get("name") ?? "repository").slice(0, 40);
+  const desc = displayCopy(searchParams.get("desc") ?? "").slice(0, 130);
   const lang = searchParams.get("lang") ?? "";
   const stars = searchParams.get("stars") ?? "0";
   const forks = searchParams.get("forks") ?? "0";
   const topics = (searchParams.get("topics") ?? "")
     .split(",")
-    .map((t) => t.trim())
+    .map((t) => omitCityName(t.trim()))
     .filter(Boolean)
     .slice(0, 4);
 

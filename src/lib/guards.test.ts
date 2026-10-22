@@ -7,6 +7,7 @@ import { selectPortfolioUsername } from "./githubUsername.ts";
 import { cardWash } from "./cardWash.ts";
 import { isPublicLiveUrl, LIVE_URL_OVERRIDES, resolveLiveUrl } from "./liveUrls.ts";
 import { createTtlCache } from "./ttlCache.ts";
+import { displayCopy, displayRepoName, omitCityName } from "./cityName.ts";
 
 describe("createTtlCache", () => {
   it("serves a repeated read from memory", async () => {
@@ -182,6 +183,46 @@ describe("resolveLiveUrl", () => {
       }),
       "https://mitchelturner.com",
     );
+  });
+});
+
+describe("omitCityName", () => {
+  it("removes the city from titles and descriptions", () => {
+    assert.equal(displayRepoName("Ketchikan-Gateway-Meetings"), "Gateway-Meetings");
+    assert.equal(displayRepoName("Ketchikan-jobs"), "jobs");
+    assert.equal(displayRepoName("Ketchikan-Gateway"), "Gateway");
+    assert.equal(displayRepoName("Ketchikan"), "Project");
+    assert.equal(
+      displayCopy("Redesign for old KetchikanGatewayBorough.Org"),
+      "Redesign for old GatewayBorough.Org",
+    );
+    assert.equal(
+      displayCopy(
+        "Machine learning to estimate health of Rockfish populations in Ketchikan, Alaska using Garmin sonar data.",
+      ),
+      "Machine learning to estimate health of Rockfish populations in Alaska using Garmin sonar data.",
+    );
+    assert.equal(
+      displayCopy("Website for the Ketchikan Gun and Rod club memberships"),
+      "Website for the Gun and Rod club memberships",
+    );
+    assert.equal(
+      displayCopy("Website to present and sell photo prints from Ketchikan by Autumn Turner"),
+      "Website to present and sell photo prints by Autumn Turner",
+    );
+    assert.equal(
+      omitCityName(
+        "schedule capacity from the Port of Ketchikan database, cross-referenced with live weather",
+      ),
+      "schedule capacity from the Port database, cross-referenced with live weather",
+    );
+    assert.equal(
+      displayCopy(
+        "A software for organizing planning and zoning documents like Comprehensive 2030 Plan, Ketchikan Code, Planning Books and Op-Eds.",
+      ),
+      "A software for organizing planning and zoning documents like Comprehensive 2030 Plan, Code, Planning Books and Op-Eds.",
+    );
+    assert.equal(omitCityName("Creek-Street"), "Creek-Street");
   });
 });
 

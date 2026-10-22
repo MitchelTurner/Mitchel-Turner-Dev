@@ -15,7 +15,7 @@ export function SiteFooter() {
 
   return (
     <footer className="site-footer">
-      <span>Mitchel Turner Dev, LLC · Ketchikan, Alaska</span>
+      <span>Mitchel Turner Dev, LLC · Alaska</span>
       <span className="site-footer-links">
         {serviceLinks.map((link, i) => (
           <span key={link.href}>

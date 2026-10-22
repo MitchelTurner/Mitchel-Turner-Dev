@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { PortfolioRepo } from "@/lib/github";
 import { languageColor } from "@/lib/languages";
+import { displayCopy, displayRepoName, omitCityName } from "@/lib/cityName";
 import { ogImageUrl, timeAgo } from "@/lib/format";
 import { cardWashVars } from "@/lib/cardWash";
 import { resolveLiveUrl } from "@/lib/liveUrls";
@@ -72,6 +73,9 @@ function ExternalLink({
 export function RepoCard({ repo }: { repo: PortfolioRepo }) {
   // Public live demo only — never Railway/GitHub dashboard URLs.
   const liveUrl = resolveLiveUrl(repo);
+  const title = displayRepoName(repo.name);
+  const description = displayCopy(repo.description, "No description provided.");
+  const topics = repo.topics.map((topic) => omitCityName(topic)).filter(Boolean);
   const deployState = repo.deployment
     ? (DEPLOY_STATE[repo.deployment.state] ?? DEPLOY_STATE.active)
     : null;
@@ -84,7 +88,7 @@ export function RepoCard({ repo }: { repo: PortfolioRepo }) {
       <div className="relative aspect-[1200/630] w-full overflow-hidden bg-black/40">
         <Image
           src={ogImageUrl(repo)}
-          alt={`${repo.name} graphic`}
+          alt={`${title} graphic`}
           fill
           sizes="(max-width: 768px) 100vw, 33vw"
           className="object-cover transition duration-500 group-hover:scale-[1.03]"
@@ -115,9 +119,9 @@ export function RepoCard({ repo }: { repo: PortfolioRepo }) {
 
       <div className="flex flex-1 flex-col gap-3 p-5">
         <div>
-          <h3 className="text-lg font-semibold text-white">{repo.name}</h3>
+          <h3 className="text-lg font-semibold text-white">{title}</h3>
           <p className="mt-1 line-clamp-2 min-h-10 text-sm text-white/55">
-            {repo.description ?? "No description provided."}
+            {description}
           </p>
         </div>
 
@@ -151,9 +155,9 @@ export function RepoCard({ repo }: { repo: PortfolioRepo }) {
           <span className="ml-auto">Updated {timeAgo(repo.pushedAt)}</span>
         </div>
 
-        {repo.topics.length > 0 && (
+        {topics.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
-            {repo.topics.slice(0, 4).map((t) => (
+            {topics.slice(0, 4).map((t) => (
               <span
                 key={t}
                 className="rounded-md bg-white/5 px-2 py-0.5 text-[11px] text-white/45"

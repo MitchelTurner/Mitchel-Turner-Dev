@@ -54,7 +54,7 @@ export function Navbar() {
       </Link>
 
       <div className="site-nav-right">
-        <span className="site-nav-loc">55°20′N 131°38′W · Ketchikan, AK</span>
+        <span className="site-nav-loc">Alaska</span>
         <div
           id="site-nav-menu"
           className={`site-nav-links${menuOpen ? " is-open" : ""}`}

@@ -7,7 +7,8 @@
 import Link from "next/link";
 import { fetchPortfolioRepos } from "@/lib/github";
 import { RepoCard } from "@/components/RepoCard";
-import { ExternalSites } from "@/components/ExternalSites";
+import { ExternalSiteCard } from "@/components/ExternalSites";
+import { EXTERNAL_SITES } from "@/lib/externalSites";
 
 export async function LiveWorkPortfolio({
   fresh = false,
@@ -91,7 +92,7 @@ export async function LiveWorkPortfolio({
             </Link>
           )}
         </div>
-      ) : repos.length === 0 ? (
+      ) : repos.length === 0 && EXTERNAL_SITES.length === 0 ? (
         <div className="glass rounded-2xl p-10 text-center">
           <p className="text-lg font-medium text-white/80">
             No public repositories found
@@ -102,13 +103,14 @@ export async function LiveWorkPortfolio({
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {EXTERNAL_SITES.map((site) => (
+            <ExternalSiteCard key={site.name} site={site} />
+          ))}
           {repos.map((repo) => (
             <RepoCard key={repo.id} repo={repo} />
           ))}
         </div>
       )}
-
-      <ExternalSites />
     </div>
   );
 }

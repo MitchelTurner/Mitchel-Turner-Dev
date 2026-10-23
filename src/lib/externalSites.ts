@@ -37,7 +37,7 @@ export const EXTERNAL_SITES: ExternalSite[] = [
     name: "Harbormaster",
     description:
       "Harbor and marina management platform: slip assignments, waitlists, recurring moorage billing, online payments, and a boater portal.",
-    role: "Product",
+    role: "Private source",
     tags: ["Web app", "Online payments"],
     year: "2026",
   },

@@ -11,7 +11,7 @@ function hostname(url: string): string {
   }
 }
 
-function ExternalSiteCard({ site }: { site: ExternalSite }) {
+export function ExternalSiteCard({ site }: { site: ExternalSite }) {
   const live = Boolean(site.url?.trim());
   const host = live && site.url ? hostname(site.url) : null;
   const coverSrc = site.image ?? ogSiteImageUrl(site);

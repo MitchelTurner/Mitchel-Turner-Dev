@@ -5,8 +5,8 @@
  * public. Use this list for client projects, private repos, or sites built on
  * closed platforms — anything you want to showcase without linking to source.
  *
- * To add a site, copy one of the entries below and edit the fields. The
- * section on the homepage hides itself automatically when this list is empty.
+ * To add a site, append an object to EXTERNAL_SITES. The section on the
+ * homepage hides itself automatically when this list is empty.
  */
 export type ExternalSite = {
   /** Display name of the site or project. */
@@ -32,13 +32,4 @@ export type ExternalSite = {
   image?: string;
 };
 
-export const EXTERNAL_SITES: ExternalSite[] = [
-  {
-    name: "Port & Harbors",
-    description:
-      "Online boat moorage and harbor registration. Boaters register a vessel and pay moorage across the small-boat harbors online — no trip to the harbor office required.",
-    role: "Client project",
-    tags: ["Web app", "Online payments", "Municipal"],
-    year: "2026",
-  },
-];
+export const EXTERNAL_SITES: ExternalSite[] = [];

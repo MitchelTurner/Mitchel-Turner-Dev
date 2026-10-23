@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 const serviceLinks = [
   { href: "/web-design", label: "Web design" },
   { href: "/custom-software", label: "Custom software" },
+  { href: "/ai-development", label: "AI development" },
   { href: "/hardware", label: "Hardware" },
 ];
 

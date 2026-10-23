@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ const WORK_AREAS = [
   {
     title: "Machine learning on real-world data",
     description:
-      "I've trained models to estimate Rockfish population health from sonar readings. If you've got data and a question you think it can answer, that's the work I like most.",
+      "I've trained models to estimate Rockfish population health from sonar readings, and I fine-tune open models on Hugging Face when the answer has to come from your own examples. If you've got data and a question you think it can answer, that's the work I like most.",
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <path d="M3 17l6-6 4 4 8-10" />
@@ -138,7 +139,14 @@ export default function AboutPage() {
         <p className="mt-3 leading-relaxed text-white/60">
           If you&apos;ve got a project — a data problem, an integration, a
           model, or just a piece of software that needs building — I&apos;m
-          available for freelance and contract work. Get in touch and let&apos;s
+          available for freelance and contract work, including{" "}
+          <Link
+            href="/ai-development"
+            className="font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
+          >
+            AI development
+          </Link>{" "}
+          on your own records. Get in touch and let&apos;s
           talk about what you need, or email me at{" "}
           <a
             href="mailto:info@mitchelturner.dev"

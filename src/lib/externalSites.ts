@@ -34,11 +34,11 @@ export type ExternalSite = {
 
 export const EXTERNAL_SITES: ExternalSite[] = [
   {
-    name: "Port & Harbors",
+    name: "Harbormaster",
     description:
-      "Online boat moorage and harbor registration. Boaters register a vessel and pay moorage across the small-boat harbors online — no trip to the harbor office required.",
-    role: "Client project",
-    tags: ["Web app", "Online payments", "Municipal"],
+      "Harbor and marina management platform: slip assignments, waitlists, recurring moorage billing, online payments, and a boater portal.",
+    role: "Product",
+    tags: ["Web app", "Online payments"],
     year: "2026",
   },
 ];

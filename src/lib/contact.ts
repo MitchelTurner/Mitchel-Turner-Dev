@@ -15,6 +15,10 @@ import { Resend } from "resend";
 export const CONTACT_EMAIL =
   process.env.CONTACT_TO_EMAIL?.trim() || "info@mitchelturner.dev";
 
+/** Public number shown wherever the site offers a way to call. */
+export const CONTACT_PHONE = "+1 907 617 5774";
+export const CONTACT_PHONE_HREF = "tel:+19076175774";
+
 const FROM_EMAIL =
   process.env.CONTACT_FROM_EMAIL?.trim() ||
   "Mitchel Turner <contact@mitchelturner.dev>";

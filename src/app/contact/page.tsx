@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/ContactForm";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "Contact — Mitchel Turner",
@@ -32,6 +32,13 @@ export default function ContactPage() {
             className="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
           >
             {CONTACT_EMAIL}
+          </a>{" "}
+          or{" "}
+          <a
+            href={CONTACT_PHONE_HREF}
+            className="text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
+          >
+            {CONTACT_PHONE}
           </a>
           .
         </p>

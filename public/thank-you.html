@@ -131,6 +131,8 @@ h1{
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
 .lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:46ch;color:var(--fog);margin:0 0 36px;}
+.lede a{color:var(--ice);text-underline-offset:3px;}
+.lede a:hover{color:var(--bio);}
 .actions{display:flex;flex-wrap:wrap;gap:14px;}
 .footer{
   position:relative;z-index:2;
@@ -166,16 +168,17 @@ h1{
     </div>
     <p class="eyebrow"><span class="dot"></span> Message received</p>
     <h1>Sent. I'll be in <span class="serif grad">touch</span>.</h1>
-    <p class="lede">I've got your details. You'll hear back within one business day — from my own inbox or a real phone number, not an automated sequence.</p>
+    <p class="lede">I've got your details. You'll hear back within one business day — from my own inbox or <a href="tel:+19076175774">+1 907 617 5774</a>.</p>
     <div class="actions">
       <a class="btn btn--primary" id="back-cta" href="/"><span>Back to home →</span></a>
+      <a class="btn btn--ghost" href="tel:+19076175774"><span>Call +1 907 617 5774</span></a>
       <a class="btn btn--ghost" href="mailto:info@mitchelturner.dev"><span>Email me directly</span></a>
     </div>
   </div>
 </main>
 
 <footer class="footer">
-  <span>Mitchel Turner Dev, LLC · Alaska · <a href="/">Home</a></span>
+  <span>Mitchel Turner Dev, LLC · Alaska · <a href="tel:+19076175774">+1 907 617 5774</a> · <a href="/">Home</a></span>
 </footer>
 
 <script>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TrackedCtaLink } from "@/components/TrackedCtaLink";
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "About — Mitchel Turner",
@@ -139,12 +140,19 @@ export default function AboutPage() {
           If you&apos;ve got a project — a data problem, an integration, a
           model, or just a piece of software that needs building — I&apos;m
           available for freelance and contract work. Get in touch and let&apos;s
-          talk about what you need, or email me at{" "}
+          talk about what you need, email me at{" "}
           <a
             href="mailto:info@mitchelturner.dev"
             className="font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
           >
             info@mitchelturner.dev
+          </a>
+          , or call{" "}
+          <a
+            href={CONTACT_PHONE_HREF}
+            className="font-medium text-white underline decoration-white/30 underline-offset-4 hover:decoration-white"
+          >
+            {CONTACT_PHONE}
           </a>
           .
         </p>

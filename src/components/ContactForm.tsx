@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { trackEvent, trackFormStart, trackGenerateLead } from "@/lib/analytics";
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -192,6 +193,13 @@ export function ContactForm({ email }: { email: string }) {
           className="text-sm text-white/50 transition hover:text-white/80"
         >
           or email {email}
+        </a>
+        <a
+          href={CONTACT_PHONE_HREF}
+          onClick={() => trackEvent("contact", { method: "phone" })}
+          className="text-sm text-white/50 transition hover:text-white/80"
+        >
+          or call {CONTACT_PHONE}
         </a>
       </div>
     </form>

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
 const serviceLinks = [
   { href: "/web-design", label: "Web design" },
@@ -15,7 +16,10 @@ export function SiteFooter() {
 
   return (
     <footer className="site-footer">
-      <span>Mitchel Turner Dev, LLC · Alaska</span>
+      <span>
+        Mitchel Turner Dev, LLC · Alaska ·{" "}
+        <a href={CONTACT_PHONE_HREF}>{CONTACT_PHONE}</a>
+      </span>
       <span className="site-footer-links">
         {serviceLinks.map((link, i) => (
           <span key={link.href}>

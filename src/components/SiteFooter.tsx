@@ -8,6 +8,7 @@ const serviceLinks = [
   { href: "/web-design", label: "Web design" },
   { href: "/custom-software", label: "Custom software" },
   { href: "/hardware", label: "Hardware" },
+  { href: "/amazon-web-services", label: "AWS" },
 ];
 
 export function SiteFooter() {

@@ -116,6 +116,8 @@ h3{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.2;let
 p{margin:0 0 16px;}
 .serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;}
 .lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:56ch;color:var(--fog);}
+.lede a{color:var(--bio);}
+.lede a:hover{color:var(--ice);}
 .grad{background:linear-gradient(100deg,var(--bio),var(--glacier) 52%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;}
 .eyebrow{
   display:inline-flex;align-items:center;gap:9px;
@@ -508,7 +510,7 @@ form.is-sent{display:none;}
       <div><dt>Handover</dt><dd>Your repo, your database, your AWS account — documented</dd></div>
     </dl>
 
-    <p class="lede" data-reveal style="margin-top:34px;color:var(--ice);max-width:62ch;">Most deployments run on Amazon EC2. The application, the database, and the path that puts a new version live sit in an Amazon Web Services account you can hold in your own name. The stack is ordinary on purpose, so the next developer can read the code and sign in to the same account.</p>
+    <p class="lede" data-reveal style="margin-top:34px;color:var(--ice);max-width:62ch;">Most deployments run on Amazon EC2. The application, the database, and the path that puts a new version live sit in an Amazon Web Services account you can hold in your own name. The stack is ordinary on purpose, so the next developer can read the code and sign in to the same account. <a href="/amazon-web-services">How that account is set up</a> is written up on its own page.</p>
   </div>
 </section>
 
@@ -576,7 +578,7 @@ form.is-sent{display:none;}
 
 <footer class="footer">
   <span>Mitchel Turner Dev, LLC · Alaska · <a href="tel:+19076175774">+1 907 617 5774</a></span>
-  <span><a href="/web-design">Web design</a> · <a href="/hardware">Hardware</a> · <a href="/">Home</a></span>
+  <span><a href="/web-design">Web design</a> · <a href="/hardware">Hardware</a> · <a href="/amazon-web-services">AWS</a> · <a href="/">Home</a></span>
 </footer>
 
 <div class="dock" id="dock">

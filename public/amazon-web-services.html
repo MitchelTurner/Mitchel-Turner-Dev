@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amazon Web Services — Mitchel Turner Dev</title>
+<meta name="description" content="How software from Mitchel Turner Dev runs on Amazon Web Services. The EC2 server, the database, and the deploy path sit in an AWS account you can hold in your own name.">
+<!-- Google tag (gtag.js) — Analytics + Ads -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YRDJ09G5DK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-YRDJ09G5DK');
+  gtag('config', 'AW-18361474386');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DEEP WATER AT NIGHT — shared system with /web-design,
+   /custom-software, and /hardware. This page is the Amazon
+   Web Services landing. Extract the shared block to one
+   stylesheet when these move into the Vite project.
+   ═══════════════════════════════════════════════════════════ */
+:root{
+  --abyss:#04101A;
+  --deep:#0A1E2B;
+  --surface:rgba(255,255,255,.045);
+  --edge:rgba(255,255,255,.10);
+  --edge-lit:rgba(255,255,255,.22);
+
+  --bio:#3DFFC0;
+  --glacier:#35C6FF;
+  --magenta:#FF2D8E;
+
+  --ice:#EAF6FA;
+  --fog:#8AA3B0;
+
+  --display:"Bricolage Grotesque","Helvetica Neue",sans-serif;
+  --serif:"Instrument Serif",Georgia,serif;
+  --body:"Inter Tight",-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+
+  --gutter:clamp(20px,5vw,72px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;background:var(--abyss);color:var(--ice);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;}
+  [data-reveal]{opacity:1!important;transform:none!important;}
+}
+
+.grain{
+  position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0;z-index:9998;
+  background:linear-gradient(90deg,var(--glacier),var(--bio),var(--magenta));
+  box-shadow:0 0 14px rgba(61,255,192,.6);
+}
+
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--gutter);
+  transition:background .4s var(--ease),backdrop-filter .4s var(--ease),border-color .4s;
+  border-bottom:1px solid transparent;
+}
+.nav.is-stuck{
+  background:rgba(4,16,26,.72);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  border-bottom-color:var(--edge);
+}
+.wordmark{font-family:var(--display);font-weight:800;font-size:16px;letter-spacing:-.02em;text-decoration:none;color:var(--ice);}
+.wordmark em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--bio);}
+.nav-right{display:flex;align-items:center;gap:22px;}
+.nav-loc{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);}
+@media(max-width:760px){.nav-loc{display:none;}}
+
+.btn{
+  position:relative;display:inline-flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  padding:15px 26px;border-radius:100px;text-decoration:none;cursor:pointer;
+  border:1px solid transparent;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),background .3s,border-color .3s;
+}
+.btn span{position:relative;z-index:2;}
+.btn::after{
+  content:"";position:absolute;inset:0;z-index:1;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.38) 50%,transparent 62%);
+  transform:translateX(-130%);transition:transform .75s var(--ease);
+}
+.btn:hover::after{transform:translateX(130%);}
+.btn--primary{background:var(--magenta);color:#fff;box-shadow:0 6px 30px -6px rgba(255,45,142,.7);}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 14px 44px -8px rgba(255,45,142,.85);}
+.btn--ghost{border-color:var(--edge-lit);color:var(--ice);background:var(--surface);backdrop-filter:blur(8px);}
+.btn--ghost:hover{transform:translateY(-2px);border-color:var(--bio);box-shadow:0 0 30px -6px rgba(61,255,192,.5);}
+.btn--sm{padding:11px 20px;font-size:11px;}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--bio);outline-offset:3px;}
+
+h1{font-family:var(--display);font-weight:800;font-size:clamp(42px,7.4vw,96px);line-height:.95;letter-spacing:-.045em;margin:0 0 26px;max-width:16ch;}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(32px,5vw,62px);line-height:1.0;letter-spacing:-.035em;margin:0 0 20px;max-width:20ch;}
+h3{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0 0 9px;}
+p{margin:0 0 16px;}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em;}
+.lede{font-size:clamp(17px,1.7vw,20px);line-height:1.6;max-width:56ch;color:var(--fog);}
+.lede a{color:var(--bio);}
+.lede a:hover{color:var(--ice);}
+.grad{background:linear-gradient(100deg,var(--bio),var(--glacier) 52%,var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:9px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--bio);margin:0 0 24px;padding:8px 15px;
+  border:1px solid rgba(61,255,192,.3);border-radius:100px;background:rgba(61,255,192,.06);
+}
+.eyebrow .dot{width:6px;height:6px;border-radius:50%;background:var(--bio);box-shadow:0 0 10px var(--bio);animation:pulse 2.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.35;transform:scale(.75);}}
+
+[data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);}
+[data-reveal].in{opacity:1;transform:none;}
+
+.band{position:relative;padding:clamp(76px,11vw,150px) var(--gutter);}
+.band--edge{border-top:1px solid var(--edge);}
+.inner{max-width:1240px;margin:0 auto;position:relative;z-index:2;}
+
+/* ═══ HERO ═══ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:130px var(--gutter) 90px;overflow:hidden;}
+.aurora{position:absolute;inset:-25%;z-index:0;filter:blur(100px);opacity:.6;}
+.aurora i{position:absolute;display:block;border-radius:50%;mix-blend-mode:screen;}
+.aurora i:nth-child(1){width:50vw;height:50vw;right:-6%;top:4%;background:radial-gradient(circle,rgba(53,198,255,.55),transparent 68%);animation:drift1 28s ease-in-out infinite alternate;}
+.aurora i:nth-child(2){width:44vw;height:44vw;left:-8%;top:26%;background:radial-gradient(circle,rgba(61,255,192,.5),transparent 68%);animation:drift2 34s ease-in-out infinite alternate;}
+.aurora i:nth-child(3){width:36vw;height:36vw;left:44%;bottom:-16%;background:radial-gradient(circle,rgba(255,45,142,.36),transparent 68%);animation:drift3 40s ease-in-out infinite alternate;}
+@keyframes drift1{to{transform:translate(-13%,12%) scale(1.16);}}
+@keyframes drift2{to{transform:translate(12%,-11%) scale(1.14);}}
+@keyframes drift3{to{transform:translate(-9%,-13%) scale(1.2);}}
+
+/* Data grid + sonar sweep */
+.gridfield{
+  position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(rgba(53,198,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(53,198,255,.07) 1px,transparent 1px);
+  background-size:64px 64px;
+  -webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 10%,transparent 68%);
+  mask-image:radial-gradient(ellipse at 50% 45%,#000 10%,transparent 68%);
+}
+.radar{position:absolute;left:50%;top:46%;width:min(1400px,145vw);aspect-ratio:1;transform:translate(-50%,-50%);z-index:1;pointer-events:none;opacity:.5;}
+.radar .rings{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(61,255,192,.09);}
+.radar .rings::before,.radar .rings::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(61,255,192,.09);}
+.radar .rings::before{inset:20%;}
+.radar .rings::after{inset:38%;}
+.radar .sweep{
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0 296deg,rgba(53,198,255,.04) 330deg,rgba(53,198,255,.15) 356deg,rgba(53,198,255,.3) 359.4deg,transparent 360deg);
+  animation:sweep 11s linear infinite;
+  -webkit-mask-image:radial-gradient(circle,#000 0 56%,transparent 74%);
+  mask-image:radial-gradient(circle,#000 0 56%,transparent 74%);
+}
+@keyframes sweep{to{transform:rotate(360deg);}}
+.hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 42%,transparent 28%,rgba(4,16,26,.7) 76%,var(--abyss) 100%);}
+.hero-grid{position:relative;z-index:3;display:grid;grid-template-columns:1fr;gap:48px;align-items:end;max-width:1240px;margin:0 auto;width:100%;}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.5fr .8fr;gap:64px;}}
+
+.reveal-line{display:block;overflow:hidden;padding-bottom:.06em;}
+.reveal-line > span{display:inline-block;transform:translateY(108%);transition:transform 1s var(--ease);}
+body.loaded .reveal-line > span{transform:none;}
+.reveal-line:nth-of-type(2) > span{transition-delay:.1s;}
+.reveal-line:nth-of-type(3) > span{transition-delay:.2s;}
+
+.glass{
+  position:relative;border:1px solid var(--edge);border-radius:20px;
+  background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.02));
+  backdrop-filter:blur(20px) saturate(140%);
+  -webkit-backdrop-filter:blur(20px) saturate(140%);
+  overflow:hidden;
+}
+.glass::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--edge-lit),transparent);}
+.spec{padding:28px 28px 10px;}
+.spec dl{margin:0;}
+.spec dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:5px;}
+.spec dd{margin:0 0 20px;font-family:var(--display);font-weight:700;font-size:21px;letter-spacing:-.02em;line-height:1.15;}
+.spec dd small{display:block;font-family:var(--serif);font-style:italic;font-weight:400;font-size:15px;color:var(--fog);letter-spacing:0;margin-top:3px;}
+
+.hero-actions{display:flex;flex-wrap:wrap;gap:13px;margin-top:34px;}
+.hero-stats{display:flex;flex-wrap:wrap;gap:34px;margin-top:52px;padding-top:30px;border-top:1px solid var(--edge);}
+.stat .n{font-family:var(--display);font-weight:800;font-size:clamp(30px,3.6vw,46px);letter-spacing:-.04em;line-height:1;}
+.stat .l{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);margin-top:8px;}
+
+.marquee{overflow:hidden;border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:20px 0;background:rgba(255,255,255,.018);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
+.mtrack{display:flex;width:max-content;animation:scroll 40s linear infinite;}
+.marquee:hover .mtrack{animation-play-state:paused;}
+@keyframes scroll{to{transform:translateX(-50%);}}
+.mtrack span{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fog);padding:0 30px;white-space:nowrap;display:flex;align-items:center;gap:30px;}
+.mtrack span::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--bio);flex:none;}
+
+/* ═══ HAZARDS — "the leak" ═══ */
+.hazards{margin:52px 0 0;padding:0;list-style:none;}
+.hazards li{
+  position:relative;padding:24px 24px 24px 62px;
+  border-top:1px solid var(--edge);font-size:clamp(17px,1.7vw,19.5px);
+  transition:background .4s var(--ease),padding-left .4s var(--ease);
+}
+.hazards li:last-child{border-bottom:1px solid var(--edge);}
+.hazards li:hover{background:rgba(255,255,255,.03);padding-left:70px;}
+.hazards li::before,.hazards li::after{
+  content:"";position:absolute;background:var(--magenta);
+  box-shadow:0 0 12px rgba(255,45,142,.8);transition:transform .4s var(--ease);
+}
+.hazards li::before{left:22px;top:calc(50% - .5px);width:16px;height:1.5px;}
+.hazards li::after{left:29px;top:calc(50% - 8px);width:1.5px;height:16px;}
+.hazards li:hover::before,.hazards li:hover::after{transform:rotate(45deg);}
+
+/* ═══ Bento capabilities ═══ */
+.bento{display:grid;grid-template-columns:1fr;gap:14px;margin-top:52px;}
+@media(min-width:640px){.bento{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.bento{grid-template-columns:repeat(6,1fr);gap:16px;}}
+.cell{
+  position:relative;padding:30px 28px;border-radius:20px;border:1px solid var(--edge);
+  background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.014));
+  overflow:hidden;transition:border-color .4s var(--ease),transform .4s var(--ease);
+}
+.cell::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .45s;
+  background:radial-gradient(460px circle at var(--mx,50%) var(--my,50%),rgba(61,255,192,.16),transparent 62%);
+}
+.cell:hover{border-color:var(--edge-lit);transform:translateY(-3px);}
+.cell:hover::before{opacity:1;}
+.cell p{margin:0;font-size:15.5px;color:var(--fog);position:relative;}
+.cell h3,.cell .idx{position:relative;}
+.idx{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--glacier);display:block;margin-bottom:16px;}
+@media(min-width:900px){
+  .cell{grid-column:span 2;}
+  .cell--a{grid-column:span 4;grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:300px;}
+  .cell--a h3{font-size:clamp(24px,2.6vw,34px);letter-spacing:-.03em;line-height:1.05;max-width:15ch;}
+  .cell--a p{font-size:17px;max-width:46ch;}
+}
+
+/* ═══ DR PLOT ═══ */
+.track{margin-top:60px;}
+.track ol{list-style:none;margin:0;padding:0;display:grid;gap:0;}
+@media(min-width:900px){.track ol{grid-template-columns:repeat(5,1fr);}}
+.fix{position:relative;padding:0 0 40px 40px;}
+@media(min-width:900px){.fix{padding:52px 22px 0 0;}}
+.fix .line{
+  position:absolute;left:9px;top:24px;bottom:0;width:2px;border-radius:2px;
+  background:linear-gradient(180deg,var(--bio),var(--glacier));
+  box-shadow:0 0 16px rgba(61,255,192,.55);
+  transform:scaleY(0);transform-origin:top;transition:transform .85s var(--ease);
+}
+@media(min-width:900px){
+  .fix .line{left:20px;right:0;top:19px;bottom:auto;width:auto;height:2px;
+    background:linear-gradient(90deg,var(--bio),var(--glacier));transform:scaleX(0);transform-origin:left;}
+}
+.fix:last-child .line{display:none;}
+.track.is-plotted .line{transform:scale(1);}
+.track.is-plotted .fix:nth-child(2) .line{transition-delay:.3s;}
+.track.is-plotted .fix:nth-child(3) .line{transition-delay:.6s;}
+.track.is-plotted .fix:nth-child(4) .line{transition-delay:.9s;}
+.fix .mark{
+  position:absolute;left:0;top:12px;width:20px;height:20px;border-radius:50%;
+  border:1.5px solid var(--bio);display:grid;place-items:center;background:var(--abyss);
+  opacity:0;transform:scale(.4);transition:opacity .5s var(--ease),transform .5s var(--ease);
+}
+@media(min-width:900px){.fix .mark{left:11px;top:9px;}}
+.fix .mark::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--bio);box-shadow:0 0 14px var(--bio);}
+.track.is-plotted .mark{opacity:1;transform:scale(1);}
+.track.is-plotted .fix:nth-child(2) .mark{transition-delay:.3s;}
+.track.is-plotted .fix:nth-child(3) .mark{transition-delay:.6s;}
+.track.is-plotted .fix:nth-child(4) .mark{transition-delay:.9s;}
+.track.is-plotted .fix:nth-child(5) .mark{transition-delay:1.2s;}
+.leg{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:10px;}
+.fix h3{font-size:19px;}
+.fix p{font-size:15px;color:var(--fog);margin:0;}
+
+/* ═══ Stack ═══ */
+.stackgrid{display:grid;grid-template-columns:1fr;gap:0;margin-top:44px;border-top:1px solid var(--edge);}
+.stackgrid div{display:grid;grid-template-columns:150px 1fr;gap:20px;padding:20px 0;border-bottom:1px solid var(--edge);align-items:baseline;}
+@media(max-width:560px){.stackgrid div{grid-template-columns:1fr;gap:6px;}}
+.stackgrid dt{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin:0;}
+.stackgrid dd{margin:0;font-family:var(--mono);font-size:14.5px;letter-spacing:.02em;color:var(--ice);}
+
+/* ═══ Form ═══ */
+.form-grid{display:grid;grid-template-columns:1fr;gap:48px;}
+@media(min-width:960px){.form-grid{grid-template-columns:.85fr 1.15fr;gap:72px;}}
+.formwrap{padding:34px;}
+@media(max-width:520px){.formwrap{padding:24px;}}
+.field{margin-bottom:18px;position:relative;}
+.field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);margin-bottom:8px;}
+.field input,.field select,.field textarea{
+  width:100%;padding:14px 16px;border-radius:12px;
+  font-family:var(--body);font-size:16px;color:var(--ice);
+  background:rgba(255,255,255,.05);border:1px solid var(--edge);
+  transition:border-color .3s,box-shadow .3s,background .3s;
+}
+.field input::placeholder,.field textarea::placeholder{color:#5D7885;}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--bio);background:rgba(255,255,255,.075);
+  box-shadow:0 0 0 4px rgba(61,255,192,.12);
+}
+.field select{appearance:none;-webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--fog) 50%),linear-gradient(135deg,var(--fog) 50%,transparent 50%);
+  background-position:calc(100% - 21px) 24px,calc(100% - 16px) 24px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+.field select option{background:var(--deep);color:var(--ice);}
+.field textarea{min-height:118px;resize:vertical;}
+.field-row{display:grid;grid-template-columns:1fr;gap:0 18px;}
+@media(min-width:560px){.field-row{grid-template-columns:1fr 1fr;}}
+.formnote{font-size:13px;color:var(--fog);margin-top:16px;}
+.contact-line{display:block;font-family:var(--mono);font-size:15px;letter-spacing:.02em;color:var(--bio);text-decoration:none;margin-top:6px;transition:color .3s;}
+.contact-line:hover{color:var(--ice);}
+.thanks{display:none;padding:34px;}
+.thanks.is-visible{display:block;}
+form.is-sent{display:none;}
+
+.dock{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,150%);z-index:950;
+  display:flex;align-items:center;gap:18px;padding:11px 11px 11px 24px;border-radius:100px;
+  background:rgba(10,30,43,.82);backdrop-filter:blur(20px) saturate(150%);
+  -webkit-backdrop-filter:blur(20px) saturate(150%);
+  border:1px solid var(--edge-lit);box-shadow:0 20px 60px -14px rgba(0,0,0,.75);
+  transition:transform .55s var(--ease);width:calc(100% - 32px);max-width:540px;justify-content:space-between;
+}
+.dock.is-up{transform:translate(-50%,0);}
+.dock p{margin:0;font-size:14px;color:var(--fog);}
+.dock b{color:var(--ice);font-weight:600;}
+@media(max-width:560px){.dock p{display:none;}.dock{justify-content:center;padding:11px;}}
+
+.footer{
+  padding:44px var(--gutter) 120px;border-top:1px solid var(--edge);
+  display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fog);
+}
+.footer a{color:var(--bio);text-decoration:none;}
+.footer a:hover{color:var(--ice);}
+
+/* Account map — nodes for the pieces that live in one AWS account */
+.regions{
+  position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:.85;
+  -webkit-mask-image:radial-gradient(ellipse at 68% 46%,#000 4%,transparent 68%);
+  mask-image:radial-gradient(ellipse at 68% 46%,#000 4%,transparent 68%);
+}
+.regions .route{fill:none;stroke:rgba(53,198,255,.22);stroke-width:1.25;stroke-linecap:square;stroke-linejoin:miter;}
+.regions .node{fill:rgba(4,16,26,.92);stroke:rgba(61,255,192,.7);stroke-width:1.4;}
+.regions .core{fill:var(--bio);filter:drop-shadow(0 0 6px rgba(61,255,192,.85));}
+.regions .pulse{
+  fill:none;stroke:var(--bio);stroke-width:1.7;stroke-linecap:round;
+  filter:drop-shadow(0 0 5px rgba(61,255,192,.9));
+  stroke-dasharray:56 1100;stroke-dashoffset:1100;
+  animation:signal 8s linear infinite;
+}
+.regions .pulse:nth-of-type(2){animation-duration:10.5s;animation-delay:1.8s;stroke:var(--glacier);filter:drop-shadow(0 0 5px rgba(53,198,255,.9));}
+@keyframes signal{to{stroke-dashoffset:-56;}}
+@media (max-width:900px){
+  .regions{
+    opacity:.4;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0 46%,#000 82%);
+    mask-image:linear-gradient(90deg,transparent 0 46%,#000 82%);
+  }
+}
+
+.honest{max-width:760px;}
+.honest .quote{font-family:var(--serif);font-style:italic;font-size:clamp(26px,3.4vw,42px);line-height:1.2;color:var(--ice);margin:0 0 26px;}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<nav class="nav" id="nav">
+  <a class="wordmark" href="/">Mitchel Turner <em>Dev</em></a>
+  <div class="nav-right">
+    <span class="nav-loc">Alaska</span>
+    <a class="btn btn--primary btn--sm" href="#start" data-cta="nav"><span>Book a call</span></a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <svg class="regions" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path class="route" d="M720 210 H980 V390 H1180 V250"/>
+    <path class="route" d="M980 390 H820 V610 H1040 V760"/>
+    <path class="route" d="M1180 390 V560 H1320"/>
+    <path class="route" d="M720 210 V430 H560"/>
+    <path class="pulse" d="M560 430 H720 V210 H980 V390 H1180 V560 H1320"/>
+    <path class="pulse" d="M980 390 H820 V610 H1040 V760"/>
+    <g>
+      <circle class="node" cx="560" cy="430" r="7"/><circle class="core" cx="560" cy="430" r="2.4"/>
+      <circle class="node" cx="720" cy="210" r="7"/><circle class="core" cx="720" cy="210" r="2.4"/>
+      <circle class="node" cx="980" cy="390" r="9"/><circle class="core" cx="980" cy="390" r="3"/>
+      <circle class="node" cx="1180" cy="250" r="7"/><circle class="core" cx="1180" cy="250" r="2.4"/>
+      <circle class="node" cx="1320" cy="560" r="7"/><circle class="core" cx="1320" cy="560" r="2.4"/>
+      <circle class="node" cx="820" cy="610" r="7"/><circle class="core" cx="820" cy="610" r="2.4"/>
+      <circle class="node" cx="1040" cy="760" r="7"/><circle class="core" cx="1040" cy="760" r="2.4"/>
+    </g>
+  </svg>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow"><span class="dot"></span> Amazon Web Services · Alaska</p>
+      <h1>
+        <span class="reveal-line"><span>The server sits</span></span>
+        <span class="reveal-line"><span>in an account</span></span>
+        <span class="reveal-line"><span><em class="serif grad">you</em> own.</span></span>
+      </h1>
+      <p class="lede">Applications I host run on Amazon Web Services. The virtual server, the database, and the steps that put a new version live sit in an AWS account with your name on the bill. I set that up, write down where everything is, and leave you able to sign in without me.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn--primary" href="#start" data-cta="hero"><span>Ask about hosting →</span></a>
+        <a class="btn btn--ghost" href="#runs"><span>What runs there</span></a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat"><div class="n">EC2</div><div class="l">Where the app runs</div></div>
+        <div class="stat"><div class="n" data-count="1">0</div><div class="l">Account, in your name</div></div>
+        <div class="stat"><div class="n">You</div><div class="l">Hold the root login</div></div>
+      </div>
+    </div>
+
+    <aside class="glass spec" data-reveal>
+      <dl>
+        <dt>Account</dt>
+        <dd>Yours<small>Billing and the root user stay with you</small></dd>
+        <dt>Compute</dt>
+        <dd>Amazon EC2<small>A server sized for this app</small></dd>
+        <dt>Database</dt>
+        <dd>Same account<small>PostgreSQL, with the application</small></dd>
+        <dt>Handover</dt>
+        <dd>A written map<small>How to sign in, deploy, and read the bill</small></dd>
+      </dl>
+    </aside>
+  </div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="mtrack">
+    <span>Amazon EC2</span><span>Your AWS account</span><span>PostgreSQL</span><span>HTTPS</span><span>Your domain</span><span>Documented deploy</span><span>A user you can disable</span>
+    <span>Amazon EC2</span><span>Your AWS account</span><span>PostgreSQL</span><span>HTTPS</span><span>Your domain</span><span>Documented deploy</span><span>A user you can disable</span>
+  </div>
+</div>
+
+<section class="band" id="runs">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> What gets set up</p>
+    <h2 data-reveal>One account. The pieces that have to <span class="serif grad">stay up</span>.</h2>
+    <p class="lede" data-reveal>This is the setup I use for an application, not a catalog of every Amazon product. Each piece is something you can find in the console after handover.</p>
+
+    <div class="bento">
+      <article class="cell cell--a" data-tilt data-reveal>
+        <span class="idx">01</span>
+        <h3>An account in your name.</h3>
+        <p>You open the AWS account, or we use one you already have. Billing, the root user, and the ability to remove my access stay with you. I work as a user on that account.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">02</span><h3>Amazon EC2</h3>
+        <p>The application runs on a virtual server you can see in the console, sized for the traffic you actually have.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">03</span><h3>The database</h3>
+        <p>PostgreSQL lives in the same account as the app, so the records and the software move together.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">04</span><h3>A path to ship a change</h3>
+        <p>There is a written way to put a new version on that server. The next person does not rebuild it from old email.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">05</span><h3>The name and the lock</h3>
+        <p>Your domain points at that server, and the site is served over HTTPS. The certificate and the DNS records are part of the handover.</p>
+      </article>
+      <article class="cell" data-tilt data-reveal>
+        <span class="idx">06</span><h3>A map you keep</h3>
+        <p>What is running, which region it is in, how to sign in, how to deploy, and what a quiet month costs.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band band--edge">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> How a setup runs</p>
+    <h2 data-reveal>The account comes first. The server <span class="serif grad">follows</span>.</h2>
+    <p class="lede" data-reveal>You can stop after the written layout and keep the notes. Nothing is launched in your account until you say so.</p>
+
+    <div class="track" id="track">
+      <ol>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Step 01</span><h3>The account</h3>
+          <p>You create an AWS account, or we confirm the one you have. You keep the root credentials.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Step 02</span><h3>Written layout</h3>
+          <p>What will run, which region, and a plain estimate of a normal month's bill, before anything is launched.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Step 03</span><h3>Server and database</h3>
+          <p>EC2, PostgreSQL, the domain, and HTTPS. You can watch each one appear in the console.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Step 04</span><h3>First deploy</h3>
+          <p>The application is running on your account, on an address your team can open.</p></li>
+        <li class="fix"><span class="line"></span><span class="mark"></span>
+          <span class="leg">Step 05</span><h3>Handover</h3>
+          <p>The map, a walkthrough, and a user you can disable. Support after that is a retainer or hourly.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="band band--edge">
+  <div class="inner">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Under the hood</p>
+    <h2 data-reveal>Ordinary pieces, in an account the next person can <span class="serif grad">open</span>.</h2>
+
+    <dl class="stackgrid" data-reveal>
+      <div><dt>Account</dt><dd>Amazon Web Services · billing in your name</dd></div>
+      <div><dt>Compute</dt><dd>Amazon EC2</dd></div>
+      <div><dt>Data</dt><dd>PostgreSQL in the same account</dd></div>
+      <div><dt>Access</dt><dd>A user on the account you can disable</dd></div>
+      <div><dt>Name</dt><dd>Your domain · HTTPS</dd></div>
+      <div><dt>Handover</dt><dd>Written map · sign-in, deploy, and the monthly bill</dd></div>
+    </dl>
+
+    <p class="lede" data-reveal style="margin-top:34px;color:var(--ice);max-width:62ch;">The application itself is the work on the <a href="/custom-software">custom software</a> page. This page is only the hosting: where it runs, who owns the account, and what you are left holding when the build is done.</p>
+  </div>
+</section>
+
+<section class="band band--edge">
+  <div class="inner honest">
+    <p class="eyebrow" data-reveal><span class="dot"></span> Straight answer</p>
+    <p class="quote" data-reveal>A brochure site does not need a virtual server.</p>
+    <p class="lede" data-reveal>Four pages and a contact form are a simpler hosting job, and that is how the <a href="/web-design">web design</a> work is set up. Amazon Web Services is for software with logins, a database, or a tool your crew opens every morning: bookings, billing, a record that has to still be there next season.</p>
+    <p class="lede" data-reveal style="color:var(--ice);margin-top:22px;">If a smaller host does that job for less, I will say so before anything is created in an account.</p>
+  </div>
+</section>
+
+<section class="band band--edge" id="start">
+  <div class="inner">
+    <div class="form-grid">
+      <div>
+        <p class="eyebrow" data-reveal><span class="dot"></span> Ask about hosting</p>
+        <h2 data-reveal>Tell me what has to stay <span class="serif grad">up</span>.</h2>
+        <p class="lede" data-reveal>I reply within one business day. If Amazon Web Services is the wrong size for the job, that is part of the reply.</p>
+        <div data-reveal style="margin-top:34px;">
+          <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
+          <a class="contact-line" href="mailto:info@mitchelturner.dev" data-track="email">info@mitchelturner.dev</a>
+          <a class="contact-line" href="tel:+19076175774" data-track="call">+1 907 617 5774</a>
+        </div>
+      </div>
+
+      <div>
+        <div class="glass formwrap" data-reveal>
+          <form id="lead-form" novalidate>
+            <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">
+              <label for="company">Company</label>
+              <input id="company" name="company" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
+              <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" autocomplete="organization" required></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+              <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label for="account">AWS account</label>
+                <select id="account" name="account">
+                  <option>No AWS account yet</option>
+                  <option>We already have one</option>
+                  <option>Not sure</option>
+                </select>
+              </div>
+              <div class="field"><label for="timeline">Timeline</label>
+                <select id="timeline" name="timeline">
+                  <option>As soon as possible</option>
+                  <option>Next 1–3 months</option>
+                  <option>Before next season</option>
+                  <option>Still exploring</option>
+                </select>
+              </div>
+            </div>
+            <div class="field"><label for="details">What needs to stay up?</label>
+              <textarea id="details" name="details" placeholder="An app with logins, a database, a site that takes bookings, or something already running that you want in your own account."></textarea>
+            </div>
+            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Ask about hosting →</span></button>
+            <p class="formnote">This goes to my inbox. I won't add you to a newsletter.</p>
+          </form>
+
+          <div class="thanks" id="thanks" role="status">
+            <h3 style="font-size:28px;">Sent.</h3>
+            <p style="color:var(--fog);margin:0;">I've got it. I'll reply within one business day, from my own email address.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>Mitchel Turner Dev, LLC · Alaska · <a href="tel:+19076175774">+1 907 617 5774</a></span>
+  <span><a href="/web-design">Web design</a> · <a href="/custom-software">Custom software</a> · <a href="/hardware">Hardware</a> · <a href="/">Home</a></span>
+</footer>
+
+<div class="dock" id="dock">
+  <p><b>The account stays in your name.</b></p>
+  <a class="btn btn--primary btn--sm" href="#start" data-cta="dock"><span>Ask about hosting</span></a>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  requestAnimationFrame(function(){ document.body.classList.add('loaded'); });
+
+  var bar=document.getElementById('progress'), nav=document.getElementById('nav'), dock=document.getElementById('dock');
+  function onScroll(){
+    var h=document.documentElement.scrollHeight-innerHeight;
+    bar.style.width=(h>0?(scrollY/h)*100:0)+'%';
+    nav.classList.toggle('is-stuck', scrollY>40);
+    dock.classList.toggle('is-up', scrollY>innerHeight*0.85 && scrollY<h-560);
+  }
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  if('IntersectionObserver' in window && !reduce){
+    var ro=new IntersectionObserver(function(es){
+      es.forEach(function(e,i){ if(e.isIntersecting){ e.target.style.transitionDelay=(i*60)+'ms'; e.target.classList.add('in'); ro.unobserve(e.target);} });
+    },{threshold:.12,rootMargin:'0px 0px -50px'});
+    document.querySelectorAll('[data-reveal]').forEach(function(el){ro.observe(el);});
+  } else { document.querySelectorAll('[data-reveal]').forEach(function(el){el.classList.add('in');}); }
+
+  if(!reduce && matchMedia('(hover:hover)').matches){
+    document.querySelectorAll('[data-tilt]').forEach(function(c){
+      c.addEventListener('mousemove',function(e){
+        var r=c.getBoundingClientRect();
+        c.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        c.style.setProperty('--my',(e.clientY-r.top)+'px');
+      });
+    });
+  }
+
+  var counted=false;
+  function count(){
+    if(counted) return; counted=true;
+    document.querySelectorAll('[data-count]').forEach(function(el){
+      var t=+el.dataset.count, s=performance.now(), d=1100;
+      if(reduce||t===0){ el.textContent=t; return; }
+      requestAnimationFrame(function step(now){
+        var p=Math.min((now-s)/d,1), e=1-Math.pow(1-p,3);
+        el.textContent=Math.round(t*e);
+        if(p<1) requestAnimationFrame(step);
+      });
+    });
+  }
+  var stats=document.querySelector('.hero-stats');
+  if(stats && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){count();o.disconnect();}});},{threshold:.4}).observe(stats);
+  } else count();
+
+  var track=document.getElementById('track');
+  if(track){
+    if(reduce||!('IntersectionObserver' in window)) track.classList.add('is-plotted');
+    else new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){track.classList.add('is-plotted');o.disconnect();}});},{threshold:.25}).observe(track);
+  }
+
+  /* ── Analytics: cta_click, form_start, lead submit ────── */
+  var LANDING='amazon-web-services';
+  document.querySelectorAll('[data-cta]').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        gtag('event','cta_click',{cta_location:el.dataset.cta,landing_page:LANDING});
+      }
+    });
+  });
+
+  var form=document.getElementById('lead-form');
+  var formStarted=false;
+  if(form){
+    form.addEventListener('focusin',function(){
+      if(formStarted) return;
+      formStarted=true;
+      if(typeof gtag==='function'){
+        gtag('event','form_start',{form_id:'lead-form',landing_page:LANDING});
+      }
+    });
+    form.addEventListener('submit',async function(ev){
+      ev.preventDefault();
+      if(!form.checkValidity()){form.reportValidity();return;}
+      var data=Object.fromEntries(new FormData(form).entries());
+      var message=[
+        'Source: amazon-web-services-landing',
+        data.business?'Business: '+data.business:'',
+        data.phone?'Phone: '+data.phone:'',
+        data.account?'AWS account: '+data.account:'',
+        data.timeline?'Timeline: '+data.timeline:'',
+        '',
+        data.details||'(No project details provided)'
+      ].filter(function(line,i,arr){return line!==''||(i>0&&arr[i-1]!=='');}).join('\n');
+      if(message.length<10) message+='\n\nLanding page lead.';
+
+      var btn=form.querySelector('[type=submit]');
+      if(btn){btn.disabled=true;btn.setAttribute('aria-busy','true');}
+      try{
+        var res=await fetch('/api/contact',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name:data.name,email:data.email,message:message,company:data.company||''})
+        });
+        var json=await res.json().catch(function(){return {};});
+        if(res.ok&&json.ok){
+          /* Destination URL conversion fires on /thank-you */
+          location.href='/thank-you?from=amazon-web-services';
+          return;
+        } else {
+          alert(json.error||'Could not send. Please email info@mitchelturner.dev directly.');
+          if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}
+        }
+      } catch(err){
+        alert('Network error. Please email info@mitchelturner.dev directly.');
+        if(btn){btn.disabled=false;btn.removeAttribute('aria-busy');}
+      }
+    });
+  }
+  document.querySelectorAll('[data-track]').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(typeof gtag==='function'){
+        var method=el.dataset.track==='call'?'phone':'email';
+        gtag('event','contact',{method:method});
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

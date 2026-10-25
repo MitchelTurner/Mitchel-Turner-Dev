@@ -32,13 +32,4 @@ export type ExternalSite = {
   image?: string;
 };
 
-export const EXTERNAL_SITES: ExternalSite[] = [
-  {
-    name: "Harbormaster",
-    description:
-      "Harbor and marina management platform: slip assignments, waitlists, recurring moorage billing, online payments, and a boater portal.",
-    role: "Product",
-    tags: ["Web app", "Online payments"],
-    year: "2026",
-  },
-];
+export const EXTERNAL_SITES: ExternalSite[] = [];

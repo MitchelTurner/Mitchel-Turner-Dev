@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       { source: "/custom-software", destination: "/custom-software.html" },
       { source: "/hardware", destination: "/hardware.html" },
       { source: "/amazon-web-services", destination: "/amazon-web-services.html" },
+      { source: "/ai-development", destination: "/ai-development.html" },
       { source: "/thank-you", destination: "/thank-you.html" },
     ];
   },

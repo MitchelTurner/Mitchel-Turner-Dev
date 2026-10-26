@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { TrackedCtaLink } from "@/components/TrackedCtaLink";
 import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
@@ -25,6 +26,8 @@ const WORK_AREAS = [
     title: "Machine learning on real-world data",
     description:
       "I've trained models to estimate Rockfish population health from sonar readings. If you've got data and a question you think it can answer, that's the work I like most.",
+    href: "/ai-development",
+    hrefLabel: "AI development in Southeast Alaska",
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
         <path d="M3 17l6-6 4 4 8-10" />
@@ -104,6 +107,14 @@ export default function AboutPage() {
                   <p className="mt-1.5 text-sm leading-relaxed text-white/55">
                     {area.description}
                   </p>
+                  {"href" in area && area.href ? (
+                    <Link
+                      href={area.href}
+                      className="mt-2 inline-flex text-sm font-medium text-cyan-300 underline decoration-cyan-300/30 underline-offset-4 hover:decoration-cyan-300"
+                    >
+                      {area.hrefLabel}
+                    </Link>
+                  ) : null}
                 </div>
               </div>
             </div>

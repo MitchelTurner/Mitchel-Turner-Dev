@@ -35,6 +35,7 @@ function oneLine(value: string): string {
 export interface ContactMessage {
   name: string;
   email: string;
+  phone?: string;
   message: string;
 }
 
@@ -51,18 +52,23 @@ export async function sendContactEmail(
   const resend = new Resend(apiKey);
   const name = oneLine(msg.name);
   const email = oneLine(msg.email);
+  const phone = oneLine(msg.phone || "");
   const sourceMatch = msg.message.match(/^Source:\s*(.+)$/m);
   const source = sourceMatch ? oneLine(sourceMatch[1]) : "";
   const subject = source
     ? `Landing lead (${source}) from ${name}`
     : `Portfolio contact from ${name}`;
-  const text = [`Name: ${name}`, `Email: ${email}`, "", msg.message].join("\n");
+  const lines = [`Name: ${name}`];
+  if (email) lines.push(`Email: ${email}`);
+  if (phone) lines.push(`Phone: ${phone}`);
+  lines.push("", msg.message);
+  const text = lines.join("\n");
 
   try {
     const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: CONTACT_EMAIL,
-      replyTo: msg.email,
+      ...(email ? { replyTo: email } : {}),
       subject,
       text,
     });

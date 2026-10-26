@@ -4,7 +4,27 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Web Design for Alaska Businesses — Mitchel Turner Dev</title>
-<meta name="description" content="Custom websites for Alaska charter operators, marinas, lodges, and shops. Designed and coded in Alaska. A written quote within 48 hours.">
+<meta name="description" content="Custom websites for Alaska charter operators, marinas, lodges, and shops. A written price before the season. Call 907 617 5774 — I answer.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Mitchel Turner Dev, LLC",
+  "url": "https://mitchelturner.dev/web-design",
+  "telephone": "+1-907-617-5774",
+  "email": "info@mitchelturner.dev",
+  "areaServed": [
+    { "@type": "City", "name": "Ketchikan" },
+    { "@type": "AdministrativeArea", "name": "Southeast Alaska" },
+    { "@type": "State", "name": "Alaska" }
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "AK",
+    "addressCountry": "US"
+  }
+}
+</script>
 <!-- Google tag (gtag.js) — Analytics + Ads -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YRDJ09G5DK"></script>
 <script>
@@ -270,6 +290,26 @@ body.loaded .reveal-line > span{transform:none;}
 .wcard .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--magenta);display:block;margin-bottom:14px;position:relative;}
 .wcard h3,.wcard p{position:relative;}
 .wcard p{font-size:15.5px;color:var(--fog);margin:0;}
+.wcard .visit{position:relative;display:inline-flex;margin-top:16px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bio);text-decoration:none;}
+.wcard .visit:hover{color:var(--ice);}
+
+.answer-line{margin:16px 0 0;font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--fog);}
+.proof{display:grid;grid-template-columns:1fr;gap:10px;margin-top:22px;max-width:640px;}
+@media(min-width:640px){.proof{grid-template-columns:1fr 1fr;}}
+.proof a{
+  display:block;text-decoration:none;color:inherit;
+  border:1px solid var(--edge);border-radius:16px;padding:14px 16px;
+  background:rgba(255,255,255,.04);transition:border-color .3s,transform .3s var(--ease);
+}
+.proof a:hover{border-color:var(--bio);transform:translateY(-2px);}
+.proof .tag{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--bio);display:block;margin-bottom:6px;}
+.proof strong{display:block;font-family:var(--display);font-weight:700;font-size:17px;letter-spacing:-.02em;}
+.proof .sub{display:block;color:var(--fog);font-size:13.5px;margin-top:4px;}
+.town-link{display:inline-block;margin-top:14px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--bio);text-decoration:none;}
+.town-link:hover{color:var(--ice);}
+
+.dock-call{font-family:var(--mono);font-size:13px;letter-spacing:.04em;color:var(--bio);text-decoration:none;white-space:nowrap;}
+.dock-call:hover{color:var(--ice);}
 
 /* ═══ DR PLOT — signature ═══ */
 .track{margin-top:60px;}
@@ -354,7 +394,7 @@ form.is-sent{display:none;}
 .dock.is-up{transform:translate(-50%,0);}
 .dock p{margin:0;font-size:14px;color:var(--fog);}
 .dock b{color:var(--ice);font-weight:600;}
-@media(max-width:560px){.dock p{display:none;}.dock{justify-content:center;padding:11px;}}
+@media(max-width:560px){.dock{padding:11px 11px 11px 18px;}}
 
 .footer{
   padding:44px var(--gutter) 120px;border-top:1px solid var(--edge);
@@ -390,12 +430,27 @@ form.is-sent{display:none;}
         <span class="reveal-line"><span>bring in the</span></span>
         <span class="reveal-line"><span>next <em class="serif grad">job.</em></span></span>
       </h1>
-      <p class="lede">Custom sites for charter operators, marinas, lodges, contractors, and shops. I design the pages and write the code, and you can reach me when something needs to change. The layout is built around your business, with your words and your photos.</p>
+      <p class="lede">Custom sites for charter operators, marinas, lodges, contractors, and shops. I design the pages and write the code. A written price before the season. The layout is built around your business, with your words and your photos.</p>
 
       <div class="hero-actions">
         <a class="btn btn--primary" href="#start" data-cta="hero"><span>Start a project →</span></a>
-        <a class="btn btn--ghost" href="#work"><span>See recent work</span></a>
+        <a class="btn btn--ghost" href="tel:+19076175774" data-cta="hero-call" data-track="call"><span>Call 907 617 5774</span></a>
       </div>
+      <p class="answer-line">I answer this number.</p>
+
+      <div class="proof">
+        <a href="https://ktnport.com" target="_blank" rel="noopener noreferrer">
+          <span class="tag">Ketchikan · live</span>
+          <strong>ktnport.com</strong>
+          <span class="sub">Cruise counts on the waterfront</span>
+        </a>
+        <a href="https://www.knudsoncove.com/" target="_blank" rel="noopener noreferrer">
+          <span class="tag">Ketchikan · live</span>
+          <strong>Knudson Cove Marina</strong>
+          <span class="sub">A working marina's site</span>
+        </a>
+      </div>
+      <a class="town-link" href="/ketchikan">In Ketchikan — start on the town page</a>
 
       <div class="hero-stats">
         <div class="stat"><div class="n" data-count="48">0</div><div class="l">Hours to your quote</div></div>
@@ -413,7 +468,7 @@ form.is-sent{display:none;}
         <dt>Typical build</dt>
         <dd>4–6 weeks</dd>
         <dt>Who you talk to</dt>
-        <dd>The developer<small>Design, code, and launch</small></dd>
+        <dd>Me<small>I answer the 907 number</small></dd>
       </dl>
     </aside>
   </div>
@@ -473,16 +528,18 @@ form.is-sent{display:none;}
         <h3>Threshold Services</h3>
         <p>A multi-page marketing site, plus a logo and brand files, for a national field-services company in smart home and distributed energy.</p>
       </article>
-      <article class="wcard" data-tilt data-reveal>
+      <a class="wcard" href="https://ktnport.com" target="_blank" rel="noopener noreferrer" data-tilt data-reveal>
         <span class="tag">Cruise counts</span>
         <h3>ktnport.com</h3>
         <p>Cruise-ship passenger counts for the waterfront, set in type you can read on a phone in the rain.</p>
-      </article>
-      <article class="wcard" data-tilt data-reveal>
+        <span class="visit">Open the site</span>
+      </a>
+      <a class="wcard" href="https://www.knudsoncove.com/" target="_blank" rel="noopener noreferrer" data-tilt data-reveal>
         <span class="tag">Working marina</span>
         <h3>Knudson Cove Marina</h3>
         <p>A redesign for a working marina, organized around the questions boaters and visitors show up with.</p>
-      </article>
+        <span class="visit">Open the site</span>
+      </a>
     </div>
   </div>
 </section>
@@ -530,7 +587,7 @@ form.is-sent{display:none;}
       <div>
         <p class="eyebrow" data-reveal><span class="dot"></span> Start a project</p>
         <h2 data-reveal>Tell me what the site has to <span class="serif grad">do</span>.</h2>
-        <p class="lede" data-reveal>I reply within one business day. If the project is a fit, the written quote follows within 48 hours.</p>
+        <p class="lede" data-reveal>Call if that is easier. I answer +1 907 617 5774. A note here gets a reply within one business day, and the written price follows within 48 hours.</p>
         <div data-reveal style="margin-top:34px;">
           <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--fog);">Or reach me directly</span>
           <a class="contact-line" href="mailto:info@mitchelturner.dev" data-track="email">info@mitchelturner.dev</a>
@@ -547,31 +604,19 @@ form.is-sent{display:none;}
             </div>
             <div class="field-row">
               <div class="field"><label for="name">Your name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
-              <div class="field"><label for="business">Business</label><input id="business" name="business" type="text" autocomplete="organization" required></div>
+              <div class="field"><label for="phone">Phone</label><input id="phone" name="phone" type="tel" autocomplete="tel" required></div>
             </div>
-            <div class="field-row">
-              <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
-              <div class="field"><label for="phone">Phone (optional)</label><input id="phone" name="phone" type="tel" autocomplete="tel"></div>
+            <div class="field"><label for="town">Town</label><input id="town" name="town" type="text" placeholder="Ketchikan, Juneau, Sitka, Petersburg…"></div>
+            <div class="field"><label for="details">What does the site have to do?</label>
+              <textarea id="details" name="details" required placeholder="One or two sentences, the way you'd say it on the phone."></textarea>
             </div>
-            <div class="field-row">
-              <div class="field"><label for="town">Town</label><input id="town" name="town" type="text" placeholder="Juneau, Sitka, Anchorage…"></div>
-              <div class="field"><label for="timeline">Timeline</label>
-                <select id="timeline" name="timeline">
-                  <option>As soon as possible</option><option>Next 1–3 months</option>
-                  <option>Before next season</option><option>Still planning</option>
-                </select>
-              </div>
-            </div>
-            <div class="field"><label for="details">What do you need the site to do?</label>
-              <textarea id="details" name="details" placeholder="A new site, a redesign, online booking, deposits, or showing up when people search. Write it the way you'd explain it on the phone."></textarea>
-            </div>
-            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Send project details →</span></button>
-            <p class="formnote">This goes to my inbox. I won't add you to a newsletter.</p>
+            <button class="btn btn--primary" type="submit" style="width:100%;justify-content:center;"><span>Send it →</span></button>
+            <p class="formnote">Call if that is easier. I won't add you to a newsletter.</p>
           </form>
 
           <div class="thanks" id="thanks" role="status">
             <h3 style="font-size:28px;">Sent.</h3>
-            <p style="color:var(--fog);margin:0;">I've got it. You'll hear back within one business day, from me, at the email you sent.</p>
+            <p style="color:var(--fog);margin:0;">I've got it. I'll reply within one business day, from the 907 number.</p>
           </div>
         </div>
       </div>
@@ -581,11 +626,11 @@ form.is-sent{display:none;}
 
 <footer class="footer">
   <span>Mitchel Turner Dev, LLC · Alaska · <a href="tel:+19076175774">+1 907 617 5774</a></span>
-  <span><a href="/custom-software">Custom software</a> · <a href="/hardware">Hardware</a> · <a href="/amazon-web-services">AWS</a> · <a href="/">Home</a></span>
+  <span><a href="/ketchikan">Ketchikan</a> · <a href="/custom-software">Custom software</a> · <a href="/hardware">Hardware</a> · <a href="/amazon-web-services">AWS</a> · <a href="/">Home</a></span>
 </footer>
 
 <div class="dock" id="dock">
-  <p><b>Written quote</b> within 48 hours.</p>
+  <a class="dock-call" href="tel:+19076175774" data-cta="dock-call" data-track="call">907 617 5774</a>
   <a class="btn btn--primary btn--sm" href="#start" data-cta="dock"><span>Start a project</span></a>
 </div>
 
@@ -670,10 +715,8 @@ form.is-sent{display:none;}
       var data=Object.fromEntries(new FormData(form).entries());
       var message=[
         'Source: web-design-landing',
-        data.business?'Business: '+data.business:'',
         data.phone?'Phone: '+data.phone:'',
         data.town?'Town: '+data.town:'',
-        data.timeline?'Timeline: '+data.timeline:'',
         '',
         data.details||'(No project details provided)'
       ].filter(function(line,i,arr){return line!==''||(i>0&&arr[i-1]!=='');}).join('\n');
@@ -685,7 +728,7 @@ form.is-sent{display:none;}
         var res=await fetch('/api/contact',{
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({name:data.name,email:data.email,message:message,company:data.company||''})
+          body:JSON.stringify({name:data.name,email:data.email||'',phone:data.phone||'',message:message,company:data.company||''})
         });
         var json=await res.json().catch(function(){return {};});
         if(res.ok&&json.ok){

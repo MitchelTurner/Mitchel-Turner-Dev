@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       { source: "/web-design", destination: "/web-design.html" },
+      { source: "/ketchikan", destination: "/ketchikan.html" },
       { source: "/custom-software", destination: "/custom-software.html" },
       { source: "/hardware", destination: "/hardware.html" },
       { source: "/amazon-web-services", destination: "/amazon-web-services.html" },

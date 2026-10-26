@@ -14,6 +14,7 @@ export const dynamic = "force-dynamic";
 
 const NAME_MAX = 120;
 const EMAIL_MAX = 254;
+const PHONE_MAX = 40;
 const MESSAGE_MAX = 5000;
 const MESSAGE_MIN = 10;
 
@@ -25,6 +26,10 @@ function isEmail(value: string): boolean {
 
 function asString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function phoneDigits(value: string): number {
+  return value.replace(/\D/g, "").length;
 }
 
 export async function POST(req: NextRequest) {
@@ -53,6 +58,7 @@ export async function POST(req: NextRequest) {
 
   const name = asString(body.name);
   const email = asString(body.email);
+  const phone = asString(body.phone);
   const message = asString(body.message);
 
   if (!name || name.length > NAME_MAX) {
@@ -61,9 +67,21 @@ export async function POST(req: NextRequest) {
       { status: 400 },
     );
   }
-  if (!email || email.length > EMAIL_MAX || !isEmail(email)) {
+  if (email && (email.length > EMAIL_MAX || !isEmail(email))) {
     return NextResponse.json(
       { error: "Please enter a valid email address.", code: "invalid_email" },
+      { status: 400 },
+    );
+  }
+  if (phone && (phone.length > PHONE_MAX || phoneDigits(phone) < 7)) {
+    return NextResponse.json(
+      { error: "Please enter a phone number.", code: "invalid_phone" },
+      { status: 400 },
+    );
+  }
+  if (!email && !phone) {
+    return NextResponse.json(
+      { error: "Please enter an email or a phone number.", code: "invalid_contact" },
       { status: 400 },
     );
   }
@@ -77,7 +95,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const result = await sendContactEmail({ name, email, message });
+  const result = await sendContactEmail({ name, email, phone, message });
 
   if (!result.ok) {
     if (result.reason === "not_configured") {

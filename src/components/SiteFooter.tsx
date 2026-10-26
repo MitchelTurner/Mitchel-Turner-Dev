@@ -6,6 +6,7 @@ import { CONTACT_PHONE, CONTACT_PHONE_HREF } from "@/lib/contact";
 
 const serviceLinks = [
   { href: "/web-design", label: "Web design" },
+  { href: "/ketchikan", label: "Ketchikan" },
   { href: "/custom-software", label: "Custom software" },
   { href: "/hardware", label: "Hardware" },
   { href: "/amazon-web-services", label: "AWS" },
